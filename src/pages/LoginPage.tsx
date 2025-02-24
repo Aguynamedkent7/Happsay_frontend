@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "@/styles/loginPage.css";
+import "src/styles/LoginPage.css";
 
 const InputField: React.FC<{ type: string; placeholder: string; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }> = ({ type, placeholder, value, onChange }) => (
   <input className="input-field" type={type} placeholder={placeholder} value={value} onChange={onChange} />
