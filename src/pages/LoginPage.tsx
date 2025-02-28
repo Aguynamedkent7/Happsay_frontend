@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-import "src/styles/LoginPage.css";
+import "@/styles/LoginPage.css";
+import { useNavigate } from "react-router-dom";
+
+
 
 const InputField: React.FC<{ type: string; placeholder: string; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }> = ({ type, placeholder, value, onChange }) => (
   <input className="input-field" type={type} placeholder={placeholder} value={value} onChange={onChange} />
@@ -12,19 +15,20 @@ const Button: React.FC<{ text: string; onClick: () => void }> = ({ text, onClick
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
+  const navigate = useNavigate();
   const handleLogin = async () => {
-    const response = await fetch("https://your-api-endpoint.com/login", {
+    const response = await fetch("http://happsay-env.eba-2bey6pik.ap-southeast-1.elasticbeanstalk.com/login/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({username: username, password: password}),
     });
 
     if (response.ok) {
       const data = await response.json();
       console.log("Login successful:", data);
+      navigate("/Mainpage");
       // Handle successful login (e.g., redirect to another page)
     } else {
       console.error("Login failed");

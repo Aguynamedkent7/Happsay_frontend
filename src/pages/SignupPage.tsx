@@ -15,7 +15,7 @@ const SignupPage: React.FC = () => {
   const [email, setEmail] = useState("");
   
   const handleSignup = async () => {
-    const response = await fetch("https://your-api-endpoint.com/Signup", {
+    const response = await fetch("http://happsay-env.eba-2bey6pik.ap-southeast-1.elasticbeanstalk.com/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -40,7 +40,7 @@ const SignupPage: React.FC = () => {
         <h2 className="title">Happsay: Plan your life</h2>
         <p className="start">Start creating planned lists today!</p>
         <form onSubmit={(e) => { e.preventDefault(); handleSignup(); }}>
-            <InputField type="text" placeholder="Email" value={username} onChange={(e) => setEmail(e.target.value)} />
+          <InputField type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
           <InputField type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
           <InputField type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
           <InputField type="password" placeholder="Confirm Password" value={password} onChange={(e) => setPassword(e.target.value)} />
