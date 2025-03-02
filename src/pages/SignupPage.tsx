@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "@/styles/SignupPage.css";
+import { Link } from "react-router-dom";
 
 const InputField: React.FC<{ type: string; placeholder: string; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }> = ({ type, placeholder, value, onChange }) => (
   <input className="signup-input-field" type={type} placeholder={placeholder} value={value} onChange={onChange} />
@@ -11,25 +12,31 @@ const Button: React.FC<{ text: string; onClick: () => void }> = ({ text, onClick
 
 const SignupPage: React.FC = () => {
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const handleSignup = async () => {
-    const response = await fetch("http://happsay-env.eba-2bey6pik.ap-southeast-1.elasticbeanstalk.com/login", {
+    const response = await fetch("http://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/register/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+        password2: confirmPassword,
+      }),
     });
 
     if (response.ok) {
       const data = await response.json();
       console.log("Signup successful:", data);
-      // Handle successful Signup (e.g., redirect to another page)
+      // Handle successful signup (e.g., redirect to login)
     } else {
       console.error("Signup failed");
-      // Handle Signup failure (e.g., show an error message)
+      // Handle signup failure (e.g., show an error message)
     }
   };
 
@@ -43,8 +50,8 @@ const SignupPage: React.FC = () => {
           <InputField type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
           <InputField type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
           <InputField type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          <InputField type="password" placeholder="Confirm Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          <a href="#" className="forgot-password">Already have an account?</a>
+          <InputField type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+          <Link to="/">Already have an account?</Link>
           <Button text="Sign Up" onClick={handleSignup} />
         </form>
       </div>

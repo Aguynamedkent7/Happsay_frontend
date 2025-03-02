@@ -52,13 +52,13 @@ body {
   
   .signup-input-field {
     width: 90%;
-    height: 27px;
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #000;
-    border-radius: 8px;
-    font-size: 1rem;
-    background-color: rgba(255, 255, 255, 0.5);
+  height: 40px;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color:  rgba(255, 255, 255, 0.5); 
   }
   .start {
     display: flex;
