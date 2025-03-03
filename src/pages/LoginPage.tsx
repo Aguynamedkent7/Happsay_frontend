@@ -30,8 +30,10 @@ const LoginPage: React.FC = () => {
       console.log("Login successful:", data);
       
       // Step 1: Store access and refresh tokens in local storage
+      localStorage.setItem("userId", String(data.user.id))
       localStorage.setItem("access_token", data.access);
       localStorage.setItem("refresh_token", data.refresh);
+      localStorage.setItem("email", data.user.email);
       
       navigate("/Mainpage");
       // Handle successful login (e.g., redirect to another page)
