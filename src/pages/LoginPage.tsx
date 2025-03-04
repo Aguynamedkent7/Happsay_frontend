@@ -31,6 +31,7 @@ const LoginPage: React.FC = () => {
       
       // Step 1: Store access and refresh tokens in local storage
       localStorage.setItem("userId", String(data.user.id))
+      localStorage.setItem("username", data.user.username);
       localStorage.setItem("access_token", data.access);
       localStorage.setItem("refresh_token", data.refresh);
       localStorage.setItem("email", data.user.email);

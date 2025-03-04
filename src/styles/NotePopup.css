@@ -5,9 +5,9 @@
     transform: translate(-50%, -50%);
     background: rgba(255, 255, 255, 0.91);
     border-radius: 10px;
-    width: 400px;
+    width: 500px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    padding: 20px;
+    padding: 10px;
   }
   
   .note-popup-content {
@@ -23,7 +23,7 @@
   }
   
   .note-title {
-    width: 100%;
+    width: auto;
     font-size: 1.2rem;
     background: none;
     border: none;
@@ -72,6 +72,7 @@
     padding: 5px 10px;
     border: none;
     border-radius: 5px;
+    max-width: 70px;
   }
   
   .save-btn {
@@ -80,14 +81,22 @@
     padding: 5px 10px;
     border: none;
     border-radius: 5px;
+    max-width: 60px;
   }
   .close-btn {
     background: none;
     border: none;
-    font-size: 1.5rem;
+    font-size: 1rem;
     cursor: pointer;
     color: #555;
     transition: color 0.2s ease-in-out;
+    text-align: center;
+    width: auto;
+    height: auto;
+    position: absolute;
+    top: -15px;
+    left: 88%;
+    
   }
   
   .close-btn:hover {
@@ -96,4 +105,13 @@
   
   .close-btn:focus {
     outline: none;
+  }
+
+  .archive-btn {
+    background: blue;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    max-width: 100px;
   }

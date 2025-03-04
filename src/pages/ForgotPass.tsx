@@ -26,9 +26,10 @@ const ForgotPass = () => {
         setError("");
         setIsSent(true);
         
-      } else {
-        setError(data.error || "Something went wrong");
-        setMessage("");
+      } 
+      else if (response.status === 400) {
+        console.error("Signup failed: No account with email found");
+        setMessage("No account with email found.");
       }
     } catch (err) {
       setError("Network error");

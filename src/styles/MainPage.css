@@ -102,6 +102,7 @@ nav {
   width: 300px;
   border: none;
   border-radius: 5px;
+  margin-top: 21px;
 }
 
 .note-input button {
@@ -112,6 +113,7 @@ nav {
   cursor: pointer;
   border-radius: 5px;
   transition: background 0.3s ease;
+  max-height: 39px;
 }
 
 .note-input button:hover {
@@ -200,3 +202,4 @@ nav {
     opacity: 1;
   }
 }
+

@@ -1,6 +1,6 @@
 const API_URL = "http://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/todolist/";
 
-export type Todo = { id: number; title: string; content: string; is_done: boolean; deadline: string };
+export type Todo = { id: number; title: string; content: string; is_done: boolean; is_archive: boolean; deadline: string };
 export type NotesState = { [key: string]: Todo[] };
 
 const getAuthHeaders = (): HeadersInit => ({
@@ -95,6 +95,19 @@ export const toggleComplete = async (id: number, is_done: boolean) => {
       method: "PATCH",
       headers: getAuthHeaders(),
       body: JSON.stringify({ is_done: !is_done }),
+    });
+    
+  } catch (error) {
+    console.error("Error updating completion status:", error);
+  }
+};
+
+export const toggleArchive = async (id: number, is_archive: boolean) => {
+  try {
+    await fetch(`${API_URL}${id}/`, {
+      method: "PATCH",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ is_archive: !is_archive }),
     });
     
   } catch (error) {

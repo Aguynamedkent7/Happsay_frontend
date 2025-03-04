@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchTodos, addNote, updateNoteTitle, updateNoteContent, deleteNote, toggleComplete, Todo, NotesState } from "@/services/API_calls";
+import { fetchTodos, addNote, updateNoteTitle, updateNoteContent, deleteNote, toggleComplete, Todo, NotesState, toggleArchive } from "@/services/API_calls";
 import "@/styles/MainPage.css";
 import "@/styles/NotePopup.css";
 import "@/styles/ProfilePopup.css";
@@ -84,6 +84,46 @@ export default function MainPage() {
       return updatedNotes;
     });
   };
+  const handleToggleArchive = async (id: number, is_archive: boolean) => {
+    await toggleArchive(id, is_archive);
+
+    setNotes((prevNotes) => {
+        const updatedNotes = { ...prevNotes };
+        
+        if (is_archive) {
+            // If the note is in Archive, move it back to ToDo
+            const noteToUnarchive = updatedNotes["Archive"].find((note) => note.id === id);
+            if (!noteToUnarchive) return updatedNotes;
+
+            noteToUnarchive.is_archive = false;
+
+            // Remove from Archive tab
+            updatedNotes["Archive"] = updatedNotes["Archive"].filter((note) => note.id !== id);
+
+            // Add back to ToDo tab
+            updatedNotes["ToDo"] = [...updatedNotes["ToDo"], noteToUnarchive];
+
+        } else {
+            // If the note is in ToDo/Done, move it to Archive
+            const sourceTab = updatedNotes["ToDo"].find((note) => note.id === id) ? "ToDo" : "Done";
+            const noteToArchive = updatedNotes[sourceTab].find((note) => note.id === id);
+            if (!noteToArchive) return updatedNotes;
+
+            noteToArchive.is_archive = true;
+
+            // Remove from source tab
+            updatedNotes[sourceTab] = updatedNotes[sourceTab].filter((note) => note.id !== id);
+
+            // Add to Archive tab
+            updatedNotes["Archive"] = [...updatedNotes["Archive"], noteToArchive];
+        }
+
+        return updatedNotes;
+    });
+
+    setSelectedNote(null); // Close popup after action
+};
+
 
   
 
@@ -100,12 +140,11 @@ export default function MainPage() {
           <div className="profile-popup-content">
             <div className="profile-header">
               <div className="profile-pic-placeholder"></div>
-              <span className="username">kerbsbual</span>
+              <span className="username"> {localStorage.getItem("username")}</span>
             </div>
             <div className="profile-options">
-              <div className="option">🔍 View Profile</div>
-              <Link to="/settings">⚙️ Settings</Link>
-              <Link to="/">🚪 Log Out</Link>
+              <Link to="/settings" className="option">⚙️ Settings</Link>
+              <Link to="/"className="option">🚪 Log Out</Link>
             </div>
           </div>
         </div>
@@ -130,7 +169,7 @@ export default function MainPage() {
               <input type="text" value={noteTitle} onChange={(e) => setNoteTitle(e.target.value)} placeholder="Enter title..." />
               <input type="text" value={noteContent} onChange={(e) => setNoteContent(e.target.value)} placeholder="Add a Task..." />
               <input type="date" value={noteDeadline} onChange={(e) => setNoteDeadline(e.target.value)} placeholder="Select deadline..."/>
-              <button onClick={handleAddNote}>Add</button>
+              <button onClick={handleAddNote} className="add">Add</button>
             </div>
           )}
 
@@ -177,10 +216,6 @@ export default function MainPage() {
             <button className="close-btn" onClick={handleSaveChanges}>✖</button>
           </div>
       
-          <label className="task-toggle">
-            <input type="checkbox" checked={isTaskMode} onChange={() => setIsTaskMode((prev) => !prev)} />
-            Toggle Checkboxes
-          </label>
       
           {isTaskMode ? (
             <div className="task-list">
@@ -203,6 +238,12 @@ export default function MainPage() {
       
           <div className="popup-footer">
             <button className="delete-btn" onClick={() => handleDeleteNote(selectedNote.id)}>Delete</button>
+            <button 
+  className="archive-btn" 
+  onClick={() => selectedNote && handleToggleArchive(selectedNote.id, selectedNote.is_archive)}
+>
+  {selectedTab === "Archive" ? "Unarchive" : "Archive"}
+</button>
             <button className="save-btn" onClick={handleSaveChanges}>Save</button>
           </div>
         </div>

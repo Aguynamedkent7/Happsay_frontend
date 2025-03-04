@@ -71,6 +71,11 @@ body {
 
     
   }
+
+  .tet{
+    color: #f76b1c;
+  text-decoration: none;
+  }
   .forgot-password {
     display: flex;
     position: relative;

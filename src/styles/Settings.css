@@ -8,6 +8,31 @@ html, body {
     font-family: Arial, sans-serif; 
     width: 100vw; 
   }
+
+  .back-btn {
+    position: absolute;
+    top: 10px;
+    left: 30px;
+    background-color: #f0f0f0;
+    color: #333;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+    width: auto;
+}
+
+.back-btn:hover {
+    background-color: #ddd;
+    transform: scale(1.05);
+}
+
+.back-btn:active {
+    background-color: #ccc;
+    transform: scale(1);
+}
   
   .settings-container { 
     display: flex; 
@@ -15,8 +40,8 @@ html, body {
     align-items: center; 
     padding: 20px; 
     width: 100vw; 
-    max-width: 400px; 
-    min-height: 80vh; 
+    height: 100vh;
+    background-color: #1e2a38; 
   }
   
   .profile-section { 
@@ -58,12 +83,13 @@ html, body {
   }
 
   .change-password{
-    font-size: 14px; 
+    font-size: 20px; 
     font-weight: bold; 
     color: white; 
-    margin-bottom: 20px; 
-    align-self: self-start;
-    padding-left: 25px;
+    margin-top: -200px; 
+    margin-bottom: 20px;
+    
+    padding-right: 150px;
   }
   
   .file-input { 
@@ -91,11 +117,12 @@ html, body {
     display: flex; 
     align-items: center; 
     background-color: rgba(255, 255, 255, 0.5); 
-    
-    padding: 12px; 
-    border-radius: 6px; 
+  
+    border-radius: 10px; 
     margin-bottom: 20px; 
     width: 93%; 
+    text-align: center;
+    height: 50px;
   }
   
   .input-group input { 
@@ -109,13 +136,15 @@ html, body {
 
     .input-group input::placeholder { 
         color: #E6E7E6BF; 
+        margin-top: 5px;
+        position: absolute;
     }
   
   .confirm-button { 
     background-color: #3498db; 
     border: none; 
     padding: 12px; 
-    width: 100%; 
+    width: 93%; 
     color: white; 
     border-radius: 6px; 
     cursor: pointer; 
