@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import "@/styles/SignupPage.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const InputField: React.FC<{ type: string; placeholder: string; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }> = ({ type, placeholder, value, onChange }) => (
   <input className="signup-input-field" type={type} placeholder={placeholder} value={value} onChange={onChange} />
 );
 
-const Button: React.FC<{ text: string; onClick: () => void }> = ({ text, onClick }) => (
-  <button className="signup-button" onClick={onClick}>{text}</button>
+const Button: React.FC<{ text: string; type?: "button" | "submit" | "reset" }> = ({ text, type = "button" }) => (
+  <button className="signup-button" type={type}>{text}</button>
 );
 
 const SignupPage: React.FC = () => {
@@ -15,6 +15,8 @@ const SignupPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleSignup = async () => {
     const response = await fetch("http://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/register/", {
@@ -33,10 +35,13 @@ const SignupPage: React.FC = () => {
     if (response.ok) {
       const data = await response.json();
       console.log("Signup successful:", data);
-      // Handle successful signup (e.g., redirect to login)
+      setMessage("Signup successful! Redirecting to login...");
+      setTimeout(() => {
+        navigate("/");
+      }, 2000); // Redirect after 2 seconds
     } else {
       console.error("Signup failed");
-      // Handle signup failure (e.g., show an error message)
+      setMessage("Signup failed. Please try again.");
     }
   };
 
@@ -52,8 +57,9 @@ const SignupPage: React.FC = () => {
           <InputField type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
           <InputField type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
           <Link to="/">Already have an account?</Link>
-          <Button text="Sign Up" onClick={handleSignup} />
+          <Button text="Sign Up" type="submit" />
         </form>
+        {message && <p className="message">{message}</p>}
       </div>
     </div>
   );
