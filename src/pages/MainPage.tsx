@@ -13,7 +13,6 @@ export default function MainPage() {
   const [noteTitle, setNoteTitle] = useState("");
   const [noteContent, setNoteContent] = useState("");
   const [selectedNote, setSelectedNote] = useState<Todo | null>(null);
-  const [isTaskMode, setIsTaskMode] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [noteDeadline, setNoteDeadline] = useState("");
 
@@ -200,55 +199,46 @@ export default function MainPage() {
       </div>
 
       {/* Note Popup */}
-      {selectedNote && (
-        <div className="note-popup">
-        <div className="note-popup-content">
-          <div className="popup-header">
-            <input
-              type="text"
-              value={selectedNote.title}
-              onChange={(e) => {
-                if (!selectedNote) return; // Ensure selectedNote is not null
-                setSelectedNote((prev) => (prev ? { ...prev, title: e.target.value } : prev));
-              }}
-              className="note-title"
-            />
-            <button className="close-btn" onClick={handleSaveChanges}>✖</button>
-          </div>
-      
-      
-          {isTaskMode ? (
-            <div className="task-list">
-              {selectedNote.content.split("\n").map((line, index) => (
-                <div key={index} className="task-item">
-                  <input type="checkbox" />
-                  <span>{line}</span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <textarea
-              value={selectedNote.content}
-              onChange={(e) => {
-                if (!selectedNote) return; 
-                setSelectedNote((prev) => (prev ? { ...prev, content: e.target.value } : prev)); // ✅ Correct, updates content
-              }}
-            />
-          )}
-      
-          <div className="popup-footer">
-            <button className="delete-btn" onClick={() => handleDeleteNote(selectedNote.id)}>Delete</button>
-            <button 
-  className="archive-btn" 
-  onClick={() => selectedNote && handleToggleArchive(selectedNote.id, selectedNote.is_archive)}
->
-  {selectedTab === "Archive" ? "Unarchive" : "Archive"}
-</button>
-            <button className="save-btn" onClick={handleSaveChanges}>Save</button>
-          </div>
-        </div>
+{selectedNote && (
+  <div className="note-popup">
+    <div className="note-popup-content">
+      <div className="popup-header">
+        <input
+          type="text"
+          value={selectedNote.title}
+          onChange={(e) => {
+            if (!selectedNote) return;
+            setSelectedNote((prev) => (prev ? { ...prev, title: e.target.value } : prev));
+          }}
+          className="note-title"
+        />
+        <button className="close-btn" onClick={handleSaveChanges}>✖</button>
       </div>
-      )}
+
+      {/* Keep only the textarea for editing content */}
+      <textarea
+        value={selectedNote.content}
+        onChange={(e) => {
+          if (!selectedNote) return;
+          setSelectedNote((prev) => (prev ? { ...prev, content: e.target.value } : prev));
+        }}
+      />
+
+      <div className="popup-footer">
+        <button className="delete-btn" onClick={() => handleDeleteNote(selectedNote.id)}>Delete</button>
+        <button 
+          className="archive-btn" 
+          onClick={() => selectedNote && handleToggleArchive(selectedNote.id, selectedNote.is_archive)}
+        >
+          {selectedTab === "Archive" ? "Unarchive" : "Archive"}
+        </button>
+        <button className="save-btn" onClick={handleSaveChanges}>Save</button>
+      </div>
+    </div>
+  </div>
+)}
+
+      
     </div>
   );
 }

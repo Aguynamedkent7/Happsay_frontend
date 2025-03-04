@@ -2,7 +2,7 @@ import "@/styles/Settings.css";
 import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import Backbutton from "@/components/ui/backbutton";
+
 
 const SettingsPage: React.FC = () => {
   const [userId, setUserId] = useState<number | null>(null);
@@ -74,7 +74,6 @@ const SettingsPage: React.FC = () => {
       }
 
       if (response.headers.get("content-type")?.includes("application/json")) {
-        const data = JSON.parse(rawResponse);
         setMessage("Profile updated successfully!");
         navigate("/Mainpage"); // Redirect to main page after successful update
 

@@ -29,7 +29,8 @@ const ForgotPass = () => {
       } 
       else if (response.status === 400) {
         console.error("Signup failed: No account with email found");
-        setMessage("No account with email found.");
+        
+        setMessage("No user is associated with this email address.");
       }
     } catch (err) {
       setError("Network error");
