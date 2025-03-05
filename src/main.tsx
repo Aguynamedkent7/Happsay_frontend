@@ -20,7 +20,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/forgot-password" element={<ForgotPass />} />
           <Route path="/reset-password/:token" element={<ResetPass />} />
           <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/MainPage" element={<MainPage />} />
+          <Route path="/mainpage" element={<MainPage />} />
         </Routes>
       </BrowserRouter>
     </ErrorBoundary>
