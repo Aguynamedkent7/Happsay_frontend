@@ -4,7 +4,7 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background: url("src/assets/Happsay BG.png") no-repeat center center;
+    background: url("/static/images/Happsay BG.png") no-repeat center center;
     background-size: cover;
     width: 100vw;
   }
@@ -12,7 +12,7 @@
     width: 100px;
     height: 100px;
     margin-bottom: px;
-    background: url("src/assets/Happsay Logo.png") no-repeat center center;
+    background: url("/static/images/Happsay Logo.png") no-repeat center center;
     background-size: cover;
   }
   .form-box {
