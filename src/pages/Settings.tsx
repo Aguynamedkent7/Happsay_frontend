@@ -65,11 +65,14 @@ const SettingsPage: React.FC = () => {
         body: JSON.stringify(updatedData),
       });
 
-      const rawResponse = await response.text();
+      const rawResponse = await response.json();
+      const responseKey = Object.keys(rawResponse)[0];
+      const responseText = rawResponse[responseKey];
       console.log("🔹 Raw API Response:", rawResponse);
 
       if (!response.ok) {
-        setMessage(`Error: ${response.status} - ${response.statusText}`);
+        //setMessage(`Error: ${response.status} - ${response.statusText}`);
+        setMessage(responseText);
         return;
       }
 

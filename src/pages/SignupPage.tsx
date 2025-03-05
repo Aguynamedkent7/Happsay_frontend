@@ -34,21 +34,26 @@ const SignupPage: React.FC = () => {
 
     if (response.ok) {
       const data = await response.json();
-      console.log("Signup successful:", data);
-      setMessage("Signup successful! Redirecting to login...");
+      const msg_key = Object.keys(data)[0];
+      const msg = data[msg_key];
+      console.log("Signup successful:", msg);
+      setMessage(`${msg} Redirecting to login...`);
       setTimeout(() => {
         navigate("/");
       }, 2000); // Redirect after 2 seconds
     } else {
-      console.error("Signup failed");
-      setMessage("Signup failed. Please try again.");
+      const error = await response.json();
+      console.error("Signup failed", error);
+      const firstErrorKey = Object.keys(error)[0];
+      const errorMessage = error[firstErrorKey] || "Failed to sign up. Please try again.";
+      setMessage(errorMessage);
     }
   };
 
   return (
     <div className="signup-container">
       <div className="signup-card">
-        <img src="src/assets/Happsay Logo.png" alt="App Logo" className="logo" />
+        <img src="src/public/static/images/Happsay Logo.png" alt="App Logo" className="logo" />
         <h2 className="title">Happsay: Plan your life</h2>
         <p className="start">Start creating planned lists today!</p>
         <form onSubmit={(e) => { e.preventDefault(); handleSignup(); }}>

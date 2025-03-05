@@ -1,3 +1,5 @@
+import api from './api';
+
 const API_URL = "https://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/todolist/";
 
 export type Todo = { id: number; title: string; content: string; is_done: boolean; is_archive: boolean; deadline: string };
@@ -10,10 +12,13 @@ const getAuthHeaders = (): HeadersInit => ({
 
 export const fetchTodos = async (): Promise<NotesState> => {
   try {
-    const response = await fetch(API_URL, { headers: getAuthHeaders() });
-    if (!response.ok) throw new Error("Failed to fetch todos");
-
-    const data: Todo[] = await response.json();
+    // const response = await fetch(API_URL, { headers: getAuthHeaders() });
+    
+    //if (!response.ok) throw new Error("Failed to fetch todos");
+    //const data: Todo[] = await response.json();
+    
+    const response = await api.get('todolist/');
+    const data: Todo[] = response.data;
     
     return {
       ToDo: data.filter((note) => !note.is_done),
