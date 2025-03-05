@@ -25,7 +25,7 @@ const ResetPass = () => {
     }
   
     try {
-      const response = await fetch(`http://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/reset-password/${token}/`, {
+      const response = await fetch(`https://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/reset-password/${token}/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password: newPassword, password2: confirmPassword }),

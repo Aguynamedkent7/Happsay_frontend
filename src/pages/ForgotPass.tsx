@@ -11,7 +11,7 @@ const ForgotPass = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/password-reset/", {
+      const response = await fetch("https://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/password-reset/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email.trim()  }),

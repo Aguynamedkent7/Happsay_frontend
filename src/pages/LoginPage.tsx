@@ -17,7 +17,7 @@ const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   
   const handleLogin = async () => {
-    const response = await fetch("http://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/login/", {
+    const response = await fetch("https://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/login/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

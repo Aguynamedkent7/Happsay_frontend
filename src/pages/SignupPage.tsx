@@ -19,7 +19,7 @@ const SignupPage: React.FC = () => {
   const navigate = useNavigate();
 
   const handleSignup = async () => {
-    const response = await fetch("http://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/register/", {
+    const response = await fetch("https://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/register/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -14,7 +14,7 @@ const SettingsPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
-  const API_BASE_URL = "http://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/users/";
+  const API_BASE_URL = "https://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/users/";
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");

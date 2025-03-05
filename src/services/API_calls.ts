@@ -1,4 +1,4 @@
-const API_URL = "http://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/todolist/";
+const API_URL = "https://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/todolist/";
 
 export type Todo = { id: number; title: string; content: string; is_done: boolean; is_archive: boolean; deadline: string };
 export type NotesState = { [key: string]: Todo[] };
@@ -46,7 +46,7 @@ export const addNote = async (title: string, content: string, deadline: string):
 export const updateNoteTitle = async (id: number, newTitle: string) => {
   try {
     const response = await fetch(
-      `http://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/todolist/${id}/`,
+      `https://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/todolist/${id}/`,
       {
         method: "PATCH",
         headers: getAuthHeaders(),
@@ -63,7 +63,7 @@ export const updateNoteTitle = async (id: number, newTitle: string) => {
 export const updateNoteContent = async (id: number, newContent: string) => {
   try {
     const response = await fetch(
-      `http://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/todolist/${id}/`,
+      `https://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/todolist/${id}/`,
       {
         method: "PATCH",
         headers: getAuthHeaders(),
