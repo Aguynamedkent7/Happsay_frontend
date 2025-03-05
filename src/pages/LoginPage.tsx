@@ -43,7 +43,7 @@ const LoginPage: React.FC = () => {
       localStorage.setItem("refresh_token", data.refresh);
       localStorage.setItem("email", data.user.email);
       
-      navigate("/Mainpage");
+      navigate("/mainpage");
     } catch (err) {
       if (err instanceof AxiosError && err.response && err.response.status === 400) {
         // Handle 400 Bad Request error
