@@ -2,7 +2,8 @@ import "@/styles/Settings.css";
 import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-
+import api from "@/services/api";
+import { AxiosError } from "axios";
 
 const SettingsPage: React.FC = () => {
   const [userId, setUserId] = useState<number | null>(null);
@@ -20,7 +21,6 @@ const SettingsPage: React.FC = () => {
     const storedUserId = localStorage.getItem("userId");
     const storedUsername = localStorage.getItem("username");
     const storedEmail = localStorage.getItem("email");
-    
 
     console.log("Stored User ID:", storedUserId); // Debugging
 
@@ -56,52 +56,42 @@ const SettingsPage: React.FC = () => {
     console.log("🔹 Sending PATCH request with:", updatedData);
 
     try {
-      const response = await fetch(`${API_BASE_URL}${userId}/`, {
-        method: "PATCH",
+      const response = await api.patch(`${API_BASE_URL}${userId}/`, updatedData, {
         headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(updatedData),
       });
 
-      const rawResponse = await response.json();
-      const responseKey = Object.keys(rawResponse)[0];
-      const responseText = rawResponse[responseKey];
-      console.log("🔹 Raw API Response:", rawResponse);
+      console.log("🔹 Raw API Response:", response.data);
 
-      if (!response.ok) {
-        //setMessage(`Error: ${response.status} - ${response.statusText}`);
-        setMessage(responseText);
-        return;
-      }
-
-      if (response.headers.get("content-type")?.includes("application/json")) {
+      if (response.status === 200) {
         setMessage("Profile updated successfully!");
-        navigate("/Mainpage"); // Redirect to main page after successful update
 
         // Update localStorage with new username/email
         localStorage.setItem("username", updatedData.username);
         localStorage.setItem("email", updatedData.email);
+
       } else {
         setMessage("Profile updated, but received unexpected response format.");
       }
     } catch (error) {
       console.error("🔹 Profile Update Error:", error);
-      setMessage("Something went wrong. Please try again.");
+      if (error instanceof AxiosError && error.response) {
+        setMessage(`Error: ${error.response.status} - ${error.response.data}`);
+      } else {
+        setMessage("Something went wrong. Please try again.");
+      }
     }
   };
 
   return (
-
     <div className="settings-wrapper">
       <div className="settings-container">
         <button className="back-btn" onClick={() => navigate(-1)}>
-              ← Back
-          </button>
+          ← Back
+        </button>
       </div>
       <div className="settings-container">
-        
         <p className="change-password">Update Account</p>
         <div className="settings-section">
           <div className="input-group">
@@ -122,7 +112,7 @@ const SettingsPage: React.FC = () => {
             />
           </div>
 
-          {[ 
+          {[
             { label: "New Password", value: password, setter: setPassword },
             { label: "Confirm New Password", value: password2, setter: setPassword2 },
           ].map(({ label, value, setter }, index) => (

@@ -130,17 +130,18 @@ export default function MainPage() {
     <div className="container">
       <header className="header">
         <h1>Happsay!</h1>
-        <img src="profile.jpg" alt="User Profile" className="profile-pic" onClick={() => setIsProfileOpen((prev) => !prev)} />
+        <button className="profile-pic" onClick={() => setIsProfileOpen((prev) => !prev)}>{localStorage.getItem("username")}</button>
       </header>
       
       {/* Profile Popup */}
       {isProfileOpen && (
         <div className="profile-popup">
           <div className="profile-popup-content">
+            {/*
             <div className="profile-header">
               <div className="profile-pic-placeholder"></div>
               <span className="username"> {localStorage.getItem("username")}</span>
-            </div>
+            </div>*/}
             <div className="profile-options">
               <Link to="/settings" className="option">⚙️ Settings</Link>
               <Link to="/"className="option">🚪 Log Out</Link>
