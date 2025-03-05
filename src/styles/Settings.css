@@ -138,6 +138,7 @@ html, body {
         color: #E6E7E6BF; 
         margin-top: 5px;
         position: absolute;
+       
     }
   
   .confirm-button { 
@@ -155,8 +156,17 @@ html, body {
   .confirm-button:hover { 
     background-color: #2980b9; 
   }
+  .input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
   .toggle-password {
-    right: 12px;
+    position: absolute;
+    left: 180px;
+    top: 5px;
+    transform: translateY(-50%);
     cursor: pointer;
     color: #bdc3c7;
     font-size: 18px;

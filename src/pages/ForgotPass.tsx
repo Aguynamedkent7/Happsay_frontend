@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "@/styles/ForgotPass.css";
 import { Link } from "react-router-dom";
+import { sendPasswordResetRequest } from "@/services/forgotpass_api"; // Import API function
 
 const ForgotPass = () => {
   const [email, setEmail] = useState("");
@@ -11,29 +12,12 @@ const ForgotPass = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch("https://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/password-reset/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim()  }),
-      });
-
-      
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setMessage(data.message);
-        setError("");
-        setIsSent(true);
-        
-      } 
-      else if (response.status === 400) {
-        console.error("Signup failed: No account with email found");
-        
-        setMessage("No user is associated with this email address.");
-      }
-    } catch (err) {
-      setError("Network error");
+      const data = await sendPasswordResetRequest(email);
+      setMessage(data.message);
+      setError("");
+      setIsSent(true);
+    } catch (err: any) {
+      setError(err.message);
       setMessage("");
     }
   };

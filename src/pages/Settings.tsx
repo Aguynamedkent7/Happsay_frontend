@@ -2,7 +2,7 @@ import "@/styles/Settings.css";
 import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import api from "@/services/api";
+import { updateUserProfile } from "@/services/settings_api";
 import { AxiosError } from "axios";
 
 const SettingsPage: React.FC = () => {
@@ -15,17 +15,13 @@ const SettingsPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
-  const API_BASE_URL = "https://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/users/";
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
     const storedUsername = localStorage.getItem("username");
     const storedEmail = localStorage.getItem("email");
 
-    console.log("Stored User ID:", storedUserId); // Debugging
-
     if (storedUserId) setUserId(parseInt(storedUserId, 10));
-
     if (storedUsername && storedEmail) {
       setUsername(storedUsername);
       setEmail(storedEmail);
@@ -45,7 +41,6 @@ const SettingsPage: React.FC = () => {
       return;
     }
 
-    // Ensure all fields are sent by using existing data if fields are empty
     const updatedData = {
       username: username.trim() || existingData?.username || "",
       email: email.trim() || existingData?.email || "",
@@ -53,29 +48,13 @@ const SettingsPage: React.FC = () => {
       password2: password2.trim(),
     };
 
-    console.log("🔹 Sending PATCH request with:", updatedData);
-
     try {
-      const response = await api.patch(`${API_BASE_URL}${userId}/`, updatedData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      console.log("🔹 Raw API Response:", response.data);
-
-      if (response.status === 200) {
-        setMessage("Profile updated successfully!");
-
-        // Update localStorage with new username/email
-        localStorage.setItem("username", updatedData.username);
-        localStorage.setItem("email", updatedData.email);
-
-      } else {
-        setMessage("Profile updated, but received unexpected response format.");
-      }
+      await updateUserProfile(userId, updatedData, token);
+      setMessage("Profile updated successfully!");
+      localStorage.setItem("username", updatedData.username);
+      localStorage.setItem("email", updatedData.email);
     } catch (error) {
-      console.error("🔹 Profile Update Error:", error);
+      console.error("Profile Update Error:", error);
       if (error instanceof AxiosError && error.response) {
         setMessage(`Error: ${error.response.status} - ${error.response.data}`);
       } else {
@@ -87,51 +66,30 @@ const SettingsPage: React.FC = () => {
   return (
     <div className="settings-wrapper">
       <div className="settings-container">
-        <button className="back-btn" onClick={() => navigate(-1)}>
-          ← Back
-        </button>
+        <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
       </div>
       <div className="settings-container">
         <p className="change-password">Update Account</p>
         <div className="settings-section">
           <div className="input-group">
-            <input
-              type="text"
-              placeholder="New Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
+            <input type="text" placeholder="New Username" value={username} onChange={(e) => setUsername(e.target.value)} />
           </div>
-
           <div className="input-group">
-            <input
-              type="email"
-              placeholder="New Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+            <input type="email" placeholder="New Email" value={email} onChange={(e) => setEmail(e.target.value)} />
           </div>
 
-          {[
-            { label: "New Password", value: password, setter: setPassword },
-            { label: "Confirm New Password", value: password2, setter: setPassword2 },
+          {[{ label: "New Password", value: password, setter: setPassword },
+            { label: "Confirm New Password", value: password2, setter: setPassword2 }
           ].map(({ label, value, setter }, index) => (
             <div className="input-group" key={index}>
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder={label}
-                value={value}
-                onChange={(e) => setter(e.target.value)}
-              />
+              <input type={showPassword ? "text" : "password"} placeholder={label} value={value} onChange={(e) => setter(e.target.value)} />
               <button type="button" className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
           ))}
 
-          <button className="confirm-button" onClick={handleSaveChanges}>
-            Save Changes
-          </button>
+          <button className="confirm-button" onClick={handleSaveChanges}>Save Changes</button>
         </div>
 
         {message && <p className="message">{message}</p>}
