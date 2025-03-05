@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import "@/styles/ResetPass.css";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { resetPassword } from "@/services/reset_api";  // ✅ Import service function
+import { resetPassword } from "@/services/reset_api"; 
+import { useNavigate } from "react-router-dom";
 
 const ResetPass = () => {
   const { token } = useParams();
@@ -11,27 +12,34 @@ const ResetPass = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     if (newPassword !== confirmPassword) {
       setMessage("Passwords do not match!");
       return;
     }
-
+  
     if (newPassword.length < 6) {
       setMessage("Password must be at least 6 characters long!");
       return;
     }
-
+  
     if (!token) {
       setMessage("Invalid password reset token.");
       return;
     }
-
+  
     const result = await resetPassword(token, newPassword, confirmPassword);
     setMessage(result.message);
+  
+    if (result.success) {
+      setTimeout(() => {
+        navigate("/"); 
+      }, 2000);
+    }
   };
 
   return (
