@@ -5,21 +5,11 @@ const API_URL = "https://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com
 export type Todo = { id: number; title: string; content: string; is_done: boolean; is_archive: boolean; deadline: string };
 export type NotesState = { [key: string]: Todo[] };
 
-const getAuthHeaders = (): HeadersInit => ({
-  Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-  "Content-Type": "application/json",
-});
-
 export const fetchTodos = async (): Promise<NotesState> => {
   try {
-    // const response = await fetch(API_URL, { headers: getAuthHeaders() });
-    
-    //if (!response.ok) throw new Error("Failed to fetch todos");
-    //const data: Todo[] = await response.json();
-    
-    const response = await api.get('todolist/');
-    const data: Todo[] = response.data;
-    
+    const response = await api.get<Todo[]>('todolist/');
+    const data = response.data;
+
     return {
       ToDo: data.filter((note) => !note.is_done),
       Done: data.filter((note) => note.is_done),
@@ -33,15 +23,14 @@ export const fetchTodos = async (): Promise<NotesState> => {
 
 export const addNote = async (title: string, content: string, deadline: string): Promise<Todo | null> => {
   try {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: getAuthHeaders(),
-      body: JSON.stringify({ title, content, completed: false , deadline}),
+    const response = await api.post<Todo>(API_URL, {
+      title,
+      content,
+      completed: false,
+      deadline,
     });
 
-    if (!response.ok) throw new Error("Failed to add note");
-
-    return await response.json();
+    return response.data;
   } catch (error) {
     console.error("Error adding note:", error);
     return null;
@@ -50,15 +39,7 @@ export const addNote = async (title: string, content: string, deadline: string):
 
 export const updateNoteTitle = async (id: number, newTitle: string) => {
   try {
-    const response = await fetch(
-      `https://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/todolist/${id}/`,
-      {
-        method: "PATCH",
-        headers: getAuthHeaders(),
-        body: JSON.stringify({ title: newTitle }),
-      }
-    );
-    return response; // Return response to check status
+    return await api.patch(`${API_URL}${id}/`, { title: newTitle });
   } catch (error) {
     console.error("Error updating title:", error);
     return null;
@@ -67,28 +48,16 @@ export const updateNoteTitle = async (id: number, newTitle: string) => {
 
 export const updateNoteContent = async (id: number, newContent: string) => {
   try {
-    const response = await fetch(
-      `https://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/todolist/${id}/`,
-      {
-        method: "PATCH",
-        headers: getAuthHeaders(),
-        body: JSON.stringify({ content: newContent }),
-      }
-    );
-    return response; // Return response to check status
+    return await api.patch(`${API_URL}${id}/`, { content: newContent });
   } catch (error) {
     console.error("Error updating content:", error);
     return null;
   }
 };
 
-
 export const deleteNote = async (id: number) => {
   try {
-    await fetch(`${API_URL}${id}/`, {
-      method: "DELETE",
-      headers: getAuthHeaders(),
-    });
+    await api.delete(`${API_URL}${id}/`);
   } catch (error) {
     console.error("Error deleting note:", error);
   }
@@ -96,12 +65,7 @@ export const deleteNote = async (id: number) => {
 
 export const toggleComplete = async (id: number, is_done: boolean) => {
   try {
-    await fetch(`${API_URL}${id}/`, {
-      method: "PATCH",
-      headers: getAuthHeaders(),
-      body: JSON.stringify({ is_done: !is_done }),
-    });
-    
+    await api.patch(`${API_URL}${id}/`, { is_done: !is_done });
   } catch (error) {
     console.error("Error updating completion status:", error);
   }
@@ -109,14 +73,8 @@ export const toggleComplete = async (id: number, is_done: boolean) => {
 
 export const toggleArchive = async (id: number, is_archive: boolean) => {
   try {
-    await fetch(`${API_URL}${id}/`, {
-      method: "PATCH",
-      headers: getAuthHeaders(),
-      body: JSON.stringify({ is_archive: !is_archive }),
-    });
-    
+    await api.patch(`${API_URL}${id}/`, { is_archive: !is_archive });
   } catch (error) {
-    console.error("Error updating completion status:", error);
+    console.error("Error updating archive status:", error);
   }
 };
-

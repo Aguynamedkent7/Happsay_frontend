@@ -85,43 +85,45 @@ export default function MainPage() {
   };
   const handleToggleArchive = async (id: number, is_archive: boolean) => {
     await toggleArchive(id, is_archive);
-
+  
     setNotes((prevNotes) => {
-        const updatedNotes = { ...prevNotes };
-        
-        if (is_archive) {
-            // If the note is in Archive, move it back to ToDo
-            const noteToUnarchive = updatedNotes["Archive"].find((note) => note.id === id);
-            if (!noteToUnarchive) return updatedNotes;
-
-            noteToUnarchive.is_archive = false;
-
-            // Remove from Archive tab
-            updatedNotes["Archive"] = updatedNotes["Archive"].filter((note) => note.id !== id);
-
-            // Add back to ToDo tab
-            updatedNotes["ToDo"] = [...updatedNotes["ToDo"], noteToUnarchive];
-
-        } else {
-            // If the note is in ToDo/Done, move it to Archive
-            const sourceTab = updatedNotes["ToDo"].find((note) => note.id === id) ? "ToDo" : "Done";
-            const noteToArchive = updatedNotes[sourceTab].find((note) => note.id === id);
-            if (!noteToArchive) return updatedNotes;
-
-            noteToArchive.is_archive = true;
-
-            // Remove from source tab
-            updatedNotes[sourceTab] = updatedNotes[sourceTab].filter((note) => note.id !== id);
-
-            // Add to Archive tab
-            updatedNotes["Archive"] = [...updatedNotes["Archive"], noteToArchive];
-        }
-
-        return updatedNotes;
+      const updatedNotes = { ...prevNotes };
+  
+      if (is_archive) {
+        // Unarchiving: Move back to "ToDo" with is_done set to false
+        const noteToUnarchive = updatedNotes["Archive"].find((note) => note.id === id);
+        if (!noteToUnarchive) return updatedNotes;
+  
+        noteToUnarchive.is_archive = false;
+        noteToUnarchive.is_done = false; // Ensure it's marked as not done
+  
+        // Remove from Archive tab
+        updatedNotes["Archive"] = updatedNotes["Archive"].filter((note) => note.id !== id);
+  
+        // Add back to ToDo tab
+        updatedNotes["ToDo"] = [...updatedNotes["ToDo"], noteToUnarchive];
+      } else {
+        // Archiving: Move the note to "Archive"
+        const sourceTab = updatedNotes["ToDo"].find((note) => note.id === id) ? "ToDo" : "Done";
+        const noteToArchive = updatedNotes[sourceTab].find((note) => note.id === id);
+        if (!noteToArchive) return updatedNotes;
+  
+        noteToArchive.is_archive = true;
+  
+        // Remove from source tab
+        updatedNotes[sourceTab] = updatedNotes[sourceTab].filter((note) => note.id !== id);
+  
+        // Add to Archive tab
+        updatedNotes["Archive"] = [...updatedNotes["Archive"], noteToArchive];
+      }
+  
+      return updatedNotes;
     });
-
+  
     setSelectedNote(null); // Close popup after action
-};
+  };
+  
+  
 
 
   
