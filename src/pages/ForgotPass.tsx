@@ -44,7 +44,7 @@ const ForgotPass = () => {
           </button>
           {message && <p className="success-message">{message}</p>}
           {error && <p className="error-message">{error}</p>}
-          <Link to="/" className="info">
+          <Link to="/login" className="info">
             Back to Login
           </Link>
         </form>

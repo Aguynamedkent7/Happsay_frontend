@@ -103,7 +103,7 @@ export const logout = async (navigate: ReturnType<typeof useNavigate>) => {
     console.log("Logout response:", response.data);
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token"); // Clear refresh token too
-    navigate("/");
+    navigate("/login");
   } catch (error: any) {
     console.error("Logout failed:", error.response ? error.response.data : error.message);
   }

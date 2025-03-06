@@ -56,7 +56,7 @@ const SignupPage: React.FC = () => {
       setMessage(`${msg} Redirecting to login...`);
 
       setTimeout(() => {
-        navigate("/");
+        navigate("/login");
       }, 2000);
     } catch (error: any) {
       console.error("Signup failed", error);
@@ -76,7 +76,7 @@ const SignupPage: React.FC = () => {
         <InputField type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} showPasswordToggle />
         <InputField type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} showPasswordToggle />
 
-          <Link to="/" className="tet">Already have an account?</Link>
+          <Link to="/login" className="tet">Already have an account?</Link>
           <Button text="Sign Up" type="submit" />
         </form>
         {message && <p className="message">{message}</p>}
