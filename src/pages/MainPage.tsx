@@ -17,6 +17,7 @@ export default function MainPage() {
   const [noteDeadline, setNoteDeadline] = useState("");
   const [noteToDelete, setNoteToDelete] = useState<Todo | null>(null);
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     async function loadTodos() {
@@ -27,7 +28,16 @@ export default function MainPage() {
   }, []);
 
   const handleAddNote = async () => {
-    if (selectedTab !== "ToDo" || !noteTitle.trim() || !noteContent.trim()) return;
+    if (selectedTab !== "ToDo") return;
+  
+    if (!noteTitle.trim() || !noteContent.trim() || !noteDeadline) {
+      setErrorMessage("Please fill in all input fields");
+      
+      // Hide error message after 3 seconds
+      setTimeout(() => setErrorMessage(""), 3000);
+      return;
+    }
+  
     const newNote = await addNote(noteTitle, noteContent, noteDeadline);
     if (newNote) {
       setNotes((prevNotes) => ({
@@ -36,8 +46,10 @@ export default function MainPage() {
       }));
       setNoteTitle("");
       setNoteContent("");
+      setNoteDeadline("");
     }
   };
+  
 
   const handleSaveChanges = async () => {
     if (!selectedNote) return;
@@ -152,6 +164,12 @@ export default function MainPage() {
       {localStorage.getItem("username")}
     </button>
   </header>
+   {errorMessage && (
+  <div className="error-popup">
+    <p>{errorMessage}</p>
+  </div>
+)}
+  
 
   {/* Profile Popup */}
   {isProfileOpen && (
@@ -169,12 +187,14 @@ export default function MainPage() {
     <aside className="sidebar fixed-sidebar">
       <nav>
         {tabs.map((tab) => (
-          <div key={tab} className={`tab ${selectedTab === tab ? "active" : ""}`} onClick={() => setSelectedTab(tab)}>
+          <div key={tab} className={`tab ${selectedTab === tab ? "active" : ""}`} onClick={() => { setSelectedTab(tab);
+            setSelectedNote(null); }}>
             {tab}
           </div>
         ))}
       </nav>
     </aside>
+   
 
     <main className="content">
       {/* Note Input */}

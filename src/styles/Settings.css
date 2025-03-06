@@ -145,7 +145,7 @@ html, body {
     background-color: #3498db; 
     border: none; 
     padding: 12px; 
-    width: 93%; 
+    width: 100%; 
     color: white; 
     border-radius: 6px; 
     cursor: pointer; 
@@ -160,12 +160,13 @@ html, body {
     position: relative;
     display: flex;
     align-items: center;
+    width: 320px;
   }
   
   .toggle-password {
     position: absolute;
-    left: 180px;
-    top: 5px;
+    left: 230px;
+    top: 0px;
     transform: translateY(-50%);
     cursor: pointer;
     color: #bdc3c7;

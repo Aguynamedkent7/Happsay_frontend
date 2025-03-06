@@ -12,7 +12,8 @@ const SettingsPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
   const [existingData, setExistingData] = useState<{ username: string; email: string } | null>(null);
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword1, setShowPassword1] = useState(false);
+const [showPassword2, setShowPassword2] = useState(false);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
@@ -65,36 +66,51 @@ const SettingsPage: React.FC = () => {
 
   return (
     <div className="settings-wrapper">
-      <div className="settings-container">
-        <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
+  <div className="settings-container">
+    <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
+  </div>
+  <div className="settings-container">
+    <p className="change-password">Update Account</p>
+    <div className="settings-section">
+      <div className="input-group">
+        <input type="text" placeholder="New Username" value={username} onChange={(e) => setUsername(e.target.value)} />
       </div>
-      <div className="settings-container">
-        <p className="change-password">Update Account</p>
-        <div className="settings-section">
-          <div className="input-group">
-            <input type="text" placeholder="New Username" value={username} onChange={(e) => setUsername(e.target.value)} />
-          </div>
-          <div className="input-group">
-            <input type="email" placeholder="New Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          </div>
-
-          {[{ label: "New Password", value: password, setter: setPassword },
-            { label: "Confirm New Password", value: password2, setter: setPassword2 }
-          ].map(({ label, value, setter }, index) => (
-            <div className="input-group" key={index}>
-              <input type={showPassword ? "text" : "password"} placeholder={label} value={value} onChange={(e) => setter(e.target.value)} />
-              <button type="button" className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </button>
-            </div>
-          ))}
-
-          <button className="confirm-button" onClick={handleSaveChanges}>Save Changes</button>
-        </div>
-
-        {message && <p className="message">{message}</p>}
+      <div className="input-group">
+        <input type="email" placeholder="New Email" value={email} onChange={(e) => setEmail(e.target.value)} />
       </div>
+
+      {/* New Password Input */}
+      <div className="input-group">
+        <input
+          type={showPassword1 ? "text" : "password"}
+          placeholder="New Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button type="button" className="toggle-password" onClick={() => setShowPassword1(!showPassword1)}>
+          {showPassword1 ? <FaEyeSlash /> : <FaEye />}
+        </button>
+      </div>
+
+      {/* Confirm Password Input */}
+      <div className="input-group">
+        <input
+          type={showPassword2 ? "text" : "password"}
+          placeholder="Confirm New Password"
+          value={password2}
+          onChange={(e) => setPassword2(e.target.value)}
+        />
+        <button type="button" className="toggle-password" onClick={() => setShowPassword2(!showPassword2)}>
+          {showPassword2 ? <FaEyeSlash /> : <FaEye />}
+        </button>
+      </div>
+
+      <button className="confirm-button" onClick={handleSaveChanges}>Save Changes</button>
     </div>
+
+    {message && <p className="message">{message}</p>}
+  </div>
+</div>
   );
 };
 
