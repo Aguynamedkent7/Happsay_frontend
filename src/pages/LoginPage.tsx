@@ -34,7 +34,7 @@ const LoginPage: React.FC = () => {
         password 
       });
       const data = response.data;
-      console.log("Login successful:");
+      console.log("Login successful:", data);
       
       // Step 1: Store access and refresh tokens in local storage
       localStorage.setItem("userId", String(data.user.id))

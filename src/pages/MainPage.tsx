@@ -3,7 +3,7 @@ import { fetchTodos, addNote, updateNoteTitle, updateNoteContent, deleteNote, to
 import "@/styles/MainPage.css";
 import "@/styles/NotePopup.css";
 import "@/styles/ProfilePopup.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const tabs = ["ToDo", "Done", "Archive"];
 
@@ -16,6 +16,7 @@ export default function MainPage() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [noteDeadline, setNoteDeadline] = useState("");
   const [noteToDelete, setNoteToDelete] = useState<Todo | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function loadTodos() {
@@ -158,7 +159,7 @@ export default function MainPage() {
       <div className="profile-popup-content">
         <div className="profile-options">
           <Link to="/settings" className="option">⚙️ Settings</Link>
-          <button onClick={logout} className="option">🚪 Log Out</button>
+          <button onClick={() => logout(navigate)} className="option">🚪 Log Out</button>
         </div>
       </div>
     </div>
