@@ -180,11 +180,17 @@ export default function MainPage() {
       {/* Note Input */}
       {selectedTab === "ToDo" && (
         <div className="note-input">
-          <input type="text" value={noteTitle} onChange={(e) => setNoteTitle(e.target.value)} placeholder="Enter title..." />
-          <input type="text" value={noteContent} onChange={(e) => setNoteContent(e.target.value)} placeholder="Add a Task..." />
-          <input type="date" value={noteDeadline} onChange={(e) => setNoteDeadline(e.target.value)} placeholder="Select deadline..." />
-          <button onClick={handleAddNote} className="add">Add</button>
+        <input type="text" value={noteTitle} onChange={(e) => setNoteTitle(e.target.value)} placeholder="Enter title..." />
+        
+        <input type="text" value={noteContent} onChange={(e) => setNoteContent(e.target.value)} placeholder="Add a Task..." />
+        
+        <div className="input-group">
+          <label htmlFor="noteDeadline">Select deadline:</label>
+          <input id="noteDeadline" type="date" value={noteDeadline} onChange={(e) => setNoteDeadline(e.target.value)} />
         </div>
+      
+        <button onClick={handleAddNote} className="add">Add</button>
+      </div>
       )}
 
       {/* Notes List */}
@@ -214,7 +220,10 @@ export default function MainPage() {
               <div className="note-info" onClick={() => setSelectedNote(note)}>
                 <strong className="note-title">{note.title}</strong>
                 <p className="note-preview">{note.content.slice(0, 30)}...</p>
-                {note.deadline && <p className="note-deadline">📅 {note.deadline}</p>}
+                <div className="note-deadline">
+  <strong>Deadline:</strong> {note.deadline ? note.deadline : "No deadline"}
+</div>
+
               </div>
             </div>
           ))
