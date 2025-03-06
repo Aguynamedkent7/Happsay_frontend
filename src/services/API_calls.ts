@@ -78,3 +78,20 @@ export const toggleArchive = async (id: number, is_archive: boolean) => {
     console.error("Error updating archive status:", error);
   }
 };
+
+export const logout = async () => {
+  try {
+    const token = localStorage.getItem("token"); 
+    if (!token) return;
+
+    await api.post("/api/logout", {}, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    window.location.href = "/"; // Redirect to login
+  } catch (error) {
+    console.error("Logout failed:", error);
+  }
+};

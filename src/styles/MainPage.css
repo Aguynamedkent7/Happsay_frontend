@@ -47,7 +47,13 @@
   flex-grow: 1;
   overflow: hidden;
 }
-
+.empty-message {
+  text-align: left;
+  color: #999;
+  font-size: 16px;
+  margin-top: 10px;
+  width:  100vw;
+}
 .sidebar {
   width: 220px;
   background-color: #34495e;
@@ -187,6 +193,7 @@ nav {
   color: #555;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   margin-top: 5px;
