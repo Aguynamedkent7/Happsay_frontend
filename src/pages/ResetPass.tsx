@@ -37,7 +37,7 @@ const ResetPass = () => {
   
     if (result.success) {
       setTimeout(() => {
-        navigate("/"); 
+        navigate("/login"); 
       }, 2000);
     }
   };

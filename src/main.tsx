@@ -15,12 +15,12 @@ createRoot(document.getElementById('root')!).render(
     <ErrorBoundary>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<LoginPage />} />
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/forgot-password" element={<ForgotPass />} />
           <Route path="/reset-password/:token" element={<ResetPass />} />
           <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/mainpage" element={<MainPage />} />
+          <Route path="/" element={<MainPage />} />
         </Routes>
       </BrowserRouter>
     </ErrorBoundary>

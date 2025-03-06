@@ -50,10 +50,10 @@ api.interceptors.response.use(
           console.error('Failed to refresh token', err);
           localStorage.removeItem('access_token');
           localStorage.removeItem('refresh_token');
-          window.location.href = '/';
+          window.location.href = '/login';
         }
       } else {
-        window.location.href = '/';
+        window.location.href = '/login';
       }
     }
     return Promise.reject(error);
