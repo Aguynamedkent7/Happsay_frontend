@@ -67,7 +67,7 @@ const SignupPage: React.FC = () => {
   return (
     <div className="signup-container">
       <div className="signup-card">
-        <img src="/static/images/Happsay Logo.png" alt="App Logo" className="logo" />
+        <img src="/static/images/Happsay Logo.webp" alt="App Logo" className="logo" />
         <h2 className="title">Happsay: Plan your life</h2>
         <p className="start">Start creating planned lists today!</p>
         <form onSubmit={(e) => { e.preventDefault(); handleSignup(); }}>

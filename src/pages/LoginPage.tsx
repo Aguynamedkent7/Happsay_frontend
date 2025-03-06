@@ -88,7 +88,7 @@ const LoginPage: React.FC = () => {
   return (
     <div className="login-container">
       <div className="login-card">
-        <img src="/static/images/Happsay Logo.png" alt="App Logo" className="logo" />
+        <img src="/static/images/Happsay Logo.webp" alt="App Logo" className="logo" />
         <h2 className="title">Happsay: Plan your life</h2>
         <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }}>
           <InputField type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
