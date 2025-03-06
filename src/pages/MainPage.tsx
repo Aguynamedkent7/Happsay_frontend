@@ -99,18 +99,24 @@ export default function MainPage() {
       const updatedNotes = { ...prevNotes };
       const sourceTab = is_done ? "Done" : "ToDo";
       const destinationTab = is_done ? "ToDo" : "Done";
-
+  
       const noteToToggle = updatedNotes[sourceTab].find((note) => note.id === id);
       if (!noteToToggle) return updatedNotes;
-
+  
       noteToToggle.is_done = !is_done;
-
+  
       updatedNotes[sourceTab] = updatedNotes[sourceTab].filter((note) => note.id !== id);
       updatedNotes[destinationTab] = [...updatedNotes[destinationTab], noteToToggle];
-
+  
       return updatedNotes;
     });
+  
+    // Close the popup if the toggled note was open
+    if (selectedNote?.id === id) {
+      setSelectedNote(null);
+    }
   };
+  
   const handleToggleArchive = async (id: number, is_archive: boolean) => {
     await toggleArchive(id, is_archive);
   
