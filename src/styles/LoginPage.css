@@ -42,16 +42,7 @@ body {
 
 }
 
-.input-field {
-  width: 90%;
-  height: 40px;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 1rem;
-  background-color:  rgba(255, 255, 255, 0.5); 
-}
+
 
 
 
@@ -96,5 +87,51 @@ body {
 .signup-text a:hover {
   text-decoration: underline;
 }
+
+
+.input-container2 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.signup-input-field2 {
+  width: 100%;
+  padding: 10px;
+  padding-right: 10px; /* Add padding so text doesn’t overlap the icon */
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Eye button inside input */
+.toggle-password2 {
+  position: absolute;
+  right: 10px; /* Move it inside the input field */
+  top: -4px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  margin-left: 40px;
+  margin-top: 25px;
+  width: auto;
+  height: auto;  
+}
+
+.toggle-password2:hover {
+  color: black;
+  background: none;
+}
+
 
  
