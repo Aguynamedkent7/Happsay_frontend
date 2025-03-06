@@ -41,10 +41,10 @@ api.interceptors.response.use(
           console.error('Failed to refresh token', err);
           localStorage.removeItem('access_token');
           localStorage.removeItem('refresh_token');
-          window.location.href = '/login';
+          window.location.href = '/';
         }
       } else {
-        window.location.href = '/login';
+        window.location.href = '/';
       }
     }
     return Promise.reject(error);
