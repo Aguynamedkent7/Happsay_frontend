@@ -8,6 +8,9 @@ html, body {
     font-family: Arial, sans-serif; 
     width: 100vw; 
   }
+  .message{
+    color: white;
+  }
 
   .back-btn {
     position: absolute;

@@ -35,20 +35,25 @@ const [showPassword2, setShowPassword2] = useState(false);
       setMessage("User ID not found. Please log in again.");
       return;
     }
-
+  
     const token = localStorage.getItem("access_token");
     if (!token) {
       setMessage("Authorization token missing. Please log in.");
       return;
     }
-
+  
+    if (password.trim() && password !== password2) {
+      setMessage("Passwords do not match. Please try again.");
+      return;
+    }
+  
     const updatedData = {
       username: username.trim() || existingData?.username || "",
       email: email.trim() || existingData?.email || "",
       password: password.trim(),
       password2: password2.trim(),
     };
-
+  
     try {
       await updateUserProfile(userId, updatedData, token);
       setMessage("Profile updated successfully!");
@@ -63,6 +68,7 @@ const [showPassword2, setShowPassword2] = useState(false);
       }
     }
   };
+  
 
   return (
     <div className="settings-wrapper">
