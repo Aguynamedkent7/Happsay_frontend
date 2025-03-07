@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "@/styles/LoginPage.css";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import api from "@/services/api";
+import api from "@/middleware/api";
 import { AxiosError } from "axios";
 import { Eye, EyeOff } from "lucide-react";
 
@@ -50,13 +50,6 @@ const LoginPage: React.FC = () => {
   
   
   const handleLogin = async () => {
-    /*const response = await fetch("https://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/login/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username: username, password: password }),
-    });*/
 
     try {
       const response = await api.post("/login/", { 

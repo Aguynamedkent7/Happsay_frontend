@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import api from '@/services/api'; // Adjust the import based on your project structure
+import api from '@/middleware/api'; // Adjust the import based on your project structure
 
 const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);

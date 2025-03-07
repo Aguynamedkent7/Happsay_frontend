@@ -1,4 +1,4 @@
-import api from './api';
+import api from '../middleware/api';
 import { useNavigate } from 'react-router-dom';
 
 const API_URL = "https://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/todolist/";
@@ -82,28 +82,15 @@ export const toggleArchive = async (id: number, is_archive: boolean) => {
 
 export const logout = async (navigate: ReturnType<typeof useNavigate>) => {
   try {
-    const token = localStorage.getItem("access_token");
-    const reftoken = localStorage.getItem("refresh_token");
-
-    if (!token || !reftoken) {
-      console.error("No token or refresh token found");
-      return;
-    }
-
-    console.log("Sending logout request with:", { token, refresh_token: reftoken });
-
+    const refresh_token = localStorage.getItem("refresh_token");
     const response = await api.post(
-      "/logout/",
-      { token, refresh_token: reftoken },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
+      "/logout/", { refresh_token }
     );
 
     console.log("Logout response:", response.data);
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token"); // Clear refresh token too
+    localStorage.clear(); // Clear refresh token too
     navigate("/login");
+
   } catch (error: any) {
     console.error("Logout failed:", error.response ? error.response.data : error.message);
   }

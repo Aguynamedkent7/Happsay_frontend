@@ -5,6 +5,7 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import { resetPassword } from "@/services/reset_api"; 
 import { useNavigate } from "react-router-dom";
 
+
 const ResetPass = () => {
   const { token } = useParams();
   const [newPassword, setNewPassword] = useState("");
@@ -31,14 +32,16 @@ const ResetPass = () => {
       setMessage("Invalid password reset token.");
       return;
     }
-  
-    const result = await resetPassword(token, newPassword, confirmPassword);
+    
+    const result = await resetPassword(
+      { token: token, password: newPassword, password2: confirmPassword }
+    );
     setMessage(result.message);
   
     if (result.success) {
       setTimeout(() => {
         navigate("/login"); 
-      }, 2000);
+      }, 1000);
     }
   };
 

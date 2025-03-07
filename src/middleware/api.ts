@@ -26,9 +26,11 @@ api.interceptors.response.use(
   async (error) => {
     // Handle 401 Unauthorized error
     const originalRequest = error.config;
+    const protectedRoutes = ['/', '/settings'];
+    const isProtectedRoute = protectedRoutes.some(route => originalRequest.url.includes(route));
 
     // If the request is unauthorized, try to refresh the access token
-    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+    if (error.response && error.response.status === 401 && isProtectedRoute && !originalRequest._retry) {
       originalRequest._retry = true;
       const refreshToken = localStorage.getItem('refresh_token');
 
@@ -48,8 +50,7 @@ api.interceptors.response.use(
           return api(originalRequest);
         } catch (err) {
           console.error('Failed to refresh token', err);
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('refresh_token');
+          localStorage.clear();
         }
       } else {
         console.log("Refresh token not found.");

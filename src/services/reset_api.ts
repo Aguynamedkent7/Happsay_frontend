@@ -1,13 +1,14 @@
-import api from "@/services/api";
+import api from "@/middleware/api";
 
 interface IResetPass {
+  token: string;
   password: string;
   password2: string;
 }
 
-export const resetPassword = async (token: string, password: string, password2: string) => {
+export const resetPassword = async (data: IResetPass) => {
   try {
-    await api.post(`/reset-password/${token}/`, { password, password2 });
+    await api.post(`/reset-password/${data.token}/`, { data });
     return { success: true, message: "Password reset successful! You can now log in." };
   } catch (error: any) {
     return {
@@ -17,10 +18,3 @@ export const resetPassword = async (token: string, password: string, password2: 
   }
 };
 
-export const resetLng = async (data: IResetPass) => {
-  try {
-    const res = api.post('/api', data)
-  } catch (error) {
-    throw error
-  }
-}

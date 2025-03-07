@@ -55,7 +55,7 @@ const [showPassword2, setShowPassword2] = useState(false);
     };
   
     try {
-      await updateUserProfile(userId, updatedData, token);
+      await updateUserProfile(userId, updatedData);
       setMessage("Profile updated successfully!");
       localStorage.setItem("username", updatedData.username);
       localStorage.setItem("email", updatedData.email);
