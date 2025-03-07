@@ -71,8 +71,8 @@ body {
 /* 🔥 Fixed Eye Icon Button */
 .toggle-password {
   position: absolute;
-  right: 10px; /* Move it inside the input field */
-  top: 50%;
+  right: -10px; /* Move it inside the input field */
+  top: 45%;
   transform: translateY(-50%);
   background: none;
   border: none;
@@ -83,11 +83,10 @@ body {
   align-items: center;
   justify-content: center;
   padding: 5px;
-  margin-left: 40px;
-  margin-top: 25px;
+  margin-left: -10px;
+  margin-top: 30px;
   width: auto;
   height: auto;  
-  
 }
 
 .toggle-password:hover {
