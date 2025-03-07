@@ -8,6 +8,7 @@ import ForgotPass from './pages/ForgotPass';
 import ResetPass from './pages/ResetPass';
 import SettingsPage from './pages/Settings';
 import ErrorBoundary from './components/ErrorBoundary';
+import PrivateRoute from './components/PrivateRoute';
 
 
 createRoot(document.getElementById('root')!).render(
@@ -19,8 +20,12 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/forgot-password" element={<ForgotPass />} />
           <Route path="/reset-password/:token" element={<ResetPass />} />
-          <Route path="/settings" element={<SettingsPage />} />
+
+          {/* Protected Routes */}
+        <Route element={<PrivateRoute />}>
           <Route path="/" element={<MainPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+        </Route>
         </Routes>
       </BrowserRouter>
     </ErrorBoundary>

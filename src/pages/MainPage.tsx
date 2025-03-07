@@ -299,7 +299,7 @@ export default function MainPage() {
   {noteToDelete && (
   <div className="delete-popup">
     <div className="popup-content">
-      <p>Are you sure you want to delete "{noteToDelete.title}"?</p>
+      <p>Are you sure you want w delete "{noteToDelete.title}"?</p>
       <button className="confirm-btn" onClick={handleDeleteConfirmed}>Yes, Delete</button>
       <button className="cancel-btn" onClick={() => setNoteToDelete(null)}>Cancel</button>
     </div>
