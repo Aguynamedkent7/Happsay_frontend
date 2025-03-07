@@ -90,15 +90,20 @@ body {
 }
 
 .toggle-password:hover {
-  color: black;
+  color: #000;
   background: none;
 }
 
 .toggle-password svg {
   width: 24px;
   height: 24px;
+  color: #666;
 }
 
+.toggle-password svg:hover {
+  color: #000;
+  background: none;
+}
 
 .start {
   display: flex;
