@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "@/styles/LoginPage.css";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 import api from "@/middleware/api";
 import { AxiosError } from "axios";
 import { Eye, EyeOff } from "lucide-react";
@@ -37,61 +38,53 @@ const InputField: React.FC<{
   );
 };
 
-
 const Button: React.FC<{ text: string; type?: "button" | "submit" | "reset" }> = ({ text, type = "button" }) => (
   <button className="login-button" type={type}>{text}</button>
 );
 
+const loginUser = async ({ username, password }: { username: string; password: string }) => {
+  const response = await api.post("/login/", { username, password });
+  return response.data;
+};
+
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
   const navigate = useNavigate();
-  
-  
-  const handleLogin = async () => {
 
-    try {
-      const response = await api.post("/login/", { 
-        username, 
-        password 
-      });
-      const data = response.data;
+  const { mutate, isPending, error } = useMutation({
+    mutationFn: loginUser,
+    onSuccess: (data) => {
       console.log("Login successful:", data);
-      
-      // Step 1: Store access and refresh tokens in local storage
-      localStorage.setItem("userId", String(data.user.id))
+      localStorage.setItem("userId", String(data.user.id));
       localStorage.setItem("username", data.user.username);
       localStorage.setItem("access_token", data.access);
       localStorage.setItem("refresh_token", data.refresh);
       localStorage.setItem("email", data.user.email);
-      
       navigate("/");
-    } catch (err) {
-      if (err instanceof AxiosError && err.response && err.response.status === 400) {
-        // Handle 400 Bad Request error
-        setMessage('Invalid username or password');
-      } else {
-        // Handle other errors
-        setMessage('An error occurred. Please try again later.');
-      }
-    }
-  };
+    },
+  });
 
   return (
     <div className="login-container">
       <div className="login-card">
         <img src="/static/images/Happsay Logo.webp" alt="App Logo" className="logo" />
         <h2 className="title">Happsay: Plan your life</h2>
-        <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }}>
+        <form 
+          onSubmit={(e) => { 
+            e.preventDefault(); 
+            mutate({ username, password });
+          }}
+        >
           <InputField type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
           <InputField type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} showPasswordToggle />
           <Link to="/forgot-password" className="forgot-password">Forgot Password?</Link>
-          <Button text="Log In"  type="submit" />
+          <Button text={isPending ? "Logging in..." : "Log In"} type="submit" />
         </form>
-        {message && <p className="message">{message}</p>}
+        {error instanceof AxiosError && error.response?.status === 400 && <p className="message">Invalid username or password</p>}
+        {error && !(error instanceof AxiosError) && <p className="message">An error occurred. Please try again later.</p>}
         <p className="signup-text">
-        Don’t have an account? <Link to="/signup">Sign up</Link>
+          Don’t have an account? <Link to="/signup">Sign up</Link>
         </p>
       </div>
     </div>

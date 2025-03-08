@@ -1,98 +1,116 @@
-import api from '../middleware/api';
-import { useNavigate } from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import api from "../middleware/api";
+import { useNavigate } from "react-router-dom";
 
 const API_URL = "https://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/todolist/";
 
-export type Todo = { id: number; title: string; content: string; is_done: boolean; is_archive: boolean; deadline: string };
-export type NotesState = { [key: string]: Todo[] };
+export type Todo = { id: number; title: string; content: string; is_done: boolean; is_archived: boolean; deadline: string };
+export type NotesState = { ToDo: Todo[]; Done: Todo[]; Archive: Todo[] };
 
-export const fetchTodos = async (): Promise<NotesState> => {
-  try {
-    const response = await api.get<Todo[]>('todolist/');
-    const data = response.data;
-
-    return {
-      ToDo: data.filter((note) => !note.is_done),
-      Done: data.filter((note) => note.is_done),
-      Archive: [],
-    };
-  } catch (error) {
-    console.error("Error fetching todos:", error);
-    return { ToDo: [], Done: [], Archive: [] };
-  }
+// ✅ Fetch Todos with TanStack Query
+export const useFetchTodos = () => {
+  return useQuery<NotesState>({
+    queryKey: ["todos"],
+    queryFn: async () => {
+      const response = await api.get<Todo[]>("todolist/");
+      const data = response.data;
+      return {
+        ToDo: data.filter((note) => !note.is_done && !note.is_archived),
+        Done: data.filter((note) => note.is_done && !note.is_archived),
+        Archive: data.filter((note) => note.is_archived),
+      };
+    },
+  });
 };
 
-export const addNote = async (title: string, content: string, deadline: string): Promise<Todo | null> => {
-  try {
-    const response = await api.post<Todo>(API_URL, {
-      title,
-      content,
-      completed: false,
-      deadline,
-    });
-
-    return response.data;
-  } catch (error) {
-    console.error("Error adding note:", error);
-    return null;
-  }
+// ✅ Add Note Mutation
+export const useAddNote = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ title, content, deadline }: { title: string; content: string; deadline: string }) => {
+      const response = await api.post<Todo>(API_URL, { title, content, completed: false, deadline });
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] }); // Refetch notes after adding
+    },
+  });
 };
 
-export const updateNoteTitle = async (id: number, newTitle: string) => {
-  try {
-    return await api.patch(`${API_URL}${id}/`, { title: newTitle });
-  } catch (error) {
-    console.error("Error updating title:", error);
-    return null;
-  }
+// ✅ Update Note Title Mutation
+export const useUpdateNoteTitle = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, newTitle }: { id: number; newTitle: string }) => {
+      return api.patch(`${API_URL}${id}/`, { title: newTitle });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
 };
 
-export const updateNoteContent = async (id: number, newContent: string) => {
-  try {
-    return await api.patch(`${API_URL}${id}/`, { content: newContent });
-  } catch (error) {
-    console.error("Error updating content:", error);
-    return null;
-  }
+// ✅ Update Note Content Mutation
+export const useUpdateNoteContent = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, newContent }: { id: number; newContent: string }) => {
+      return api.patch(`${API_URL}${id}/`, { content: newContent });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
 };
 
-export const deleteNote = async (id: number) => {
-  try {
-    await api.delete(`${API_URL}${id}/`);
-  } catch (error) {
-    console.error("Error deleting note:", error);
-  }
+// ✅ Delete Note Mutation
+export const useDeleteNote = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: number) => {
+      await api.delete(`${API_URL}${id}/`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
 };
 
-export const toggleComplete = async (id: number, is_done: boolean) => {
-  try {
-    await api.patch(`${API_URL}${id}/`, { is_done: !is_done });
-  } catch (error) {
-    console.error("Error updating completion status:", error);
-  }
+// ✅ Toggle Complete Mutation
+export const useToggleComplete = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, is_done }: { id: number; is_done: boolean }) => {
+      await api.patch(`${API_URL}${id}/`, { is_done: !is_done });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
 };
 
-export const toggleArchive = async (id: number, is_archive: boolean) => {
-  try {
-    await api.patch(`${API_URL}${id}/`, { is_archive: !is_archive });
-  } catch (error) {
-    console.error("Error updating archive status:", error);
-  }
+// ✅ Toggle Archive Mutation
+export const useToggleArchive = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, is_archived }: { id: number; is_archived: boolean }) => {
+      await api.patch(`${API_URL}${id}/`, { is_archived: !is_archived });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+      console.log("Note archived/unarchived successfully.");
+    },
+  });
 };
 
+// ✅ Logout Function
 export const logout = async (navigate: ReturnType<typeof useNavigate>) => {
   try {
     const refresh_token = localStorage.getItem("refresh_token");
-    const response = await api.post(
-      "/logout/", { refresh_token }
-    );
-
-    console.log("Logout response:", response.data);
-    localStorage.clear(); // Clear refresh token too
+    await api.post("/logout/", { refresh_token });
+    localStorage.clear();
     navigate("/login");
-
   } catch (error: any) {
     console.error("Logout failed:", error.response ? error.response.data : error.message);
   }
 };
-

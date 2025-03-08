@@ -1,26 +1,15 @@
 import { useState } from "react";
 import "@/styles/ForgotPass.css";
 import { Link } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 import { sendPasswordResetRequest } from "@/services/forgotpass_api"; // Import API function
 
 const ForgotPass = () => {
   const [email, setEmail] = useState("");
-  const [isSent, setIsSent] = useState(false);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const data = await sendPasswordResetRequest(email);
-      setMessage(data.message);
-      setError("");
-      setIsSent(true);
-    } catch (err: any) {
-      setError(err.message);
-      setMessage("");
-    }
-  };
+  const { mutate, isSuccess, isPending, error } = useMutation({
+    mutationFn: sendPasswordResetRequest,
+  });
 
   return (
     <div className="forget-password-container">
@@ -31,7 +20,12 @@ const ForgotPass = () => {
         <p className="enter">
           Enter your account email to send a password reset request form.
         </p>
-        <form onSubmit={handleSubmit}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            mutate(email);
+          }}
+        >
           <input
             type="email"
             placeholder="Email"
@@ -39,11 +33,11 @@ const ForgotPass = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <button type="submit" disabled={isSent}>
-            {isSent ? "Already Sent" : "Send Reset Request"}
+          <button type="submit" disabled={isSuccess || isPending}>
+            {isPending ? "Sending..." : isSuccess ? "Already Sent" : "Send Reset Request"}
           </button>
-          {message && <p className="success-message">{message}</p>}
-          {error && <p className="error-message">{error}</p>}
+          {isSuccess && <p className="success-message">Password reset email sent!</p>}
+          {error && <p className="error-message">{(error as Error).message}</p>}
           <Link to="/login" className="info">
             Back to Login
           </Link>

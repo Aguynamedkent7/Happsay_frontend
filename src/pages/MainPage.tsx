@@ -1,15 +1,25 @@
-import { useState, useEffect } from "react";
-import { fetchTodos, addNote, updateNoteTitle, updateNoteContent, deleteNote, toggleComplete, Todo, NotesState, toggleArchive, logout } from "@/services/API_calls";
+import { useState } from "react";
+import { 
+  useFetchTodos, 
+  useAddNote, 
+  useUpdateNoteTitle, 
+  useUpdateNoteContent, 
+  useDeleteNote, 
+  useToggleComplete, 
+  useToggleArchive,
+  logout, 
+  Todo, NotesState
+} from "@/services/API_calls";
 import "@/styles/MainPage.css";
 import "@/styles/NotePopup.css";
 import "@/styles/ProfilePopup.css";
 import { Link, useNavigate } from "react-router-dom";
 
+
 const tabs = ["ToDo", "Done", "Archive"];
 
 export default function MainPage() {
   const [selectedTab, setSelectedTab] = useState("ToDo");
-  const [notes, setNotes] = useState<NotesState>({ ToDo: [], Done: [], Archive: [] });
   const [noteTitle, setNoteTitle] = useState("");
   const [noteContent, setNoteContent] = useState("");
   const [selectedNote, setSelectedNote] = useState<Todo | null>(null);
@@ -19,66 +29,53 @@ export default function MainPage() {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => {
-    async function loadTodos() {
-      const fetchedNotes = await fetchTodos();
-      setNotes(fetchedNotes);
-    }
-    loadTodos();
-  }, []);
+  // ✅ Fetch notes using TanStack Query
+  const { data: notes } = useFetchTodos();
+
+  // ✅ Mutations for notes
+  const addNoteMutation = useAddNote();
+  const updateTitleMutation = useUpdateNoteTitle();
+  const updateContentMutation = useUpdateNoteContent();
 
   const handleAddNote = async () => {
     if (selectedTab !== "ToDo") return;
-  
+
     if (!noteTitle.trim() || !noteContent.trim() || !noteDeadline) {
       setErrorMessage("Please fill in all input fields");
-      
-      // Hide error message after 3 seconds
       setTimeout(() => setErrorMessage(""), 3000);
       return;
     }
-  
-    const newNote = await addNote(noteTitle, noteContent, noteDeadline);
-    if (newNote) {
-      setNotes((prevNotes) => ({
-        ...prevNotes,
-        ToDo: [...prevNotes.ToDo, newNote],
-      }));
-      setNoteTitle("");
-      setNoteContent("");
-      setNoteDeadline("");
-    }
+
+    addNoteMutation.mutate({ title: noteTitle, content: noteContent, deadline: noteDeadline });
+
+    // Reset input fields
+    setNoteTitle("");
+    setNoteContent("");
+    setNoteDeadline("");
   };
-  
 
   const handleSaveChanges = async () => {
     if (!selectedNote) return;
-  
+
     try {
-      await updateNoteTitle(selectedNote.id, selectedNote.title);
-      await updateNoteContent(selectedNote.id, selectedNote.content);
-      
-      setNotes((prevNotes) => ({
-        ...prevNotes,
-        [selectedTab]: prevNotes[selectedTab].map((note) =>
-          note.id === selectedNote.id ? { ...note, title: selectedNote.title, content: selectedNote.content } : note
-        ),
-      }));
-  
+      updateTitleMutation.mutate({ id: selectedNote.id, newTitle: selectedNote.title });
+      updateContentMutation.mutate({ id: selectedNote.id, newContent: selectedNote.content });
+
       setSelectedNote(null); // Close the popup
     } catch (error) {
       console.error("Error saving changes:", error);
     }
   };
 
+  const deleteNoteMutation = useDeleteNote();
+  const toggleCompleteMutation = useToggleComplete();
+  const toggleArchiveMutation = useToggleArchive();
+  
+  // ✅ Delete Note
   const handleDeleteNote = async (id: number) => {
-    await deleteNote(id);
-    setNotes((prevNotes) => ({
-      ...prevNotes,
-      [selectedTab]: prevNotes[selectedTab].filter((note) => note.id !== id),
-    }));
+    deleteNoteMutation.mutate(id);
   };
-
+  
   const confirmDeleteNote = (note: Todo) => {
     setNoteToDelete(note);
   };
@@ -91,25 +88,9 @@ export default function MainPage() {
     setNoteToDelete(null); // Close the delete confirmation popup
   };
   
-  
-
-  const handleToggleComplete = async (id: number, is_done: boolean) => {
-    await toggleComplete(id, is_done);
-    setNotes((prevNotes) => {
-      const updatedNotes = { ...prevNotes };
-      const sourceTab = is_done ? "Done" : "ToDo";
-      const destinationTab = is_done ? "ToDo" : "Done";
-  
-      const noteToToggle = updatedNotes[sourceTab].find((note) => note.id === id);
-      if (!noteToToggle) return updatedNotes;
-  
-      noteToToggle.is_done = !is_done;
-  
-      updatedNotes[sourceTab] = updatedNotes[sourceTab].filter((note) => note.id !== id);
-      updatedNotes[destinationTab] = [...updatedNotes[destinationTab], noteToToggle];
-  
-      return updatedNotes;
-    });
+  // ✅ Toggle Completion
+  const handleToggleComplete = (id: number, is_done: boolean) => {
+    toggleCompleteMutation.mutate({ id, is_done });
   
     // Close the popup if the toggled note was open
     if (selectedNote?.id === id) {
@@ -117,46 +98,14 @@ export default function MainPage() {
     }
   };
   
-  const handleToggleArchive = async (id: number, is_archive: boolean) => {
-    await toggleArchive(id, is_archive);
+  // ✅ Toggle Archive
+  const handleToggleArchive = (id: number, is_archived: boolean) => {
+    console.log("Toggling archive for note:", id, is_archived);
+    toggleArchiveMutation.mutate({ id, is_archived });
   
-    setNotes((prevNotes) => {
-      const updatedNotes = { ...prevNotes };
-  
-      if (is_archive) {
-        // Unarchiving: Move back to "ToDo" with is_done set to false
-        const noteToUnarchive = updatedNotes["Archive"].find((note) => note.id === id);
-        if (!noteToUnarchive) return updatedNotes;
-  
-        noteToUnarchive.is_archive = false;
-        noteToUnarchive.is_done = false; // Ensure it's marked as not done
-  
-        // Remove from Archive tab
-        updatedNotes["Archive"] = updatedNotes["Archive"].filter((note) => note.id !== id);
-  
-        // Add back to ToDo tab
-        updatedNotes["ToDo"] = [...updatedNotes["ToDo"], noteToUnarchive];
-      } else {
-        // Archiving: Move the note to "Archive"
-        const sourceTab = updatedNotes["ToDo"].find((note) => note.id === id) ? "ToDo" : "Done";
-        const noteToArchive = updatedNotes[sourceTab].find((note) => note.id === id);
-        if (!noteToArchive) return updatedNotes;
-  
-        noteToArchive.is_archive = true;
-  
-        // Remove from source tab
-        updatedNotes[sourceTab] = updatedNotes[sourceTab].filter((note) => note.id !== id);
-  
-        // Add to Archive tab
-        updatedNotes["Archive"] = [...updatedNotes["Archive"], noteToArchive];
-      }
-  
-      return updatedNotes;
-    });
-  
-    setSelectedNote(null); // Close popup after action
+    // Close popup after action
+    setSelectedNote(null);
   };
-  
   
 
 
@@ -221,7 +170,7 @@ export default function MainPage() {
 
       {/* Notes List */}
       <div className="notes-container">
-        {notes[selectedTab].length === 0 ? (
+      {!notes || notes[selectedTab as keyof NotesState]?.length === 0 ? (
           <p className="empty-message">
         {selectedTab === "Done"
         ? "No completed tasks yet. Keep going!"
@@ -230,7 +179,7 @@ export default function MainPage() {
         : "Its quiet around here....Start planning your life now!"}
     </p>
         ) : (
-          notes[selectedTab].map((note) => (
+          notes[selectedTab as keyof NotesState]?.map((note) => (
             <div key={note.id} className="note-card">
               {selectedTab !== "Archive" && (
                 <input
@@ -287,7 +236,7 @@ export default function MainPage() {
           <button className="delete-btn" onClick={() => confirmDeleteNote(selectedNote!)}>Delete</button>
           <button 
             className="archive-btn" 
-            onClick={() => selectedNote && handleToggleArchive(selectedNote.id, selectedNote.is_archive)}
+            onClick={() => selectedNote && handleToggleArchive(selectedNote.id, selectedNote.is_archived)}
           >
             {selectedTab === "Archive" ? "Unarchive" : "Archive"}
           </button>

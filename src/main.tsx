@@ -9,25 +9,30 @@ import ResetPass from './pages/ResetPass';
 import SettingsPage from './pages/Settings';
 import ErrorBoundary from './components/ErrorBoundary';
 import PrivateRoute from './components/PrivateRoute';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ErrorBoundary>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/forgot-password" element={<ForgotPass />} />
-          <Route path="/reset-password/:token" element={<ResetPass />} />
+    <QueryClientProvider client={queryClient}>
+      <ErrorBoundary>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/forgot-password" element={<ForgotPass />} />
+            <Route path="/reset-password/:token" element={<ResetPass />} />
 
-          {/* Protected Routes */}
-        <Route element={<PrivateRoute />}>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
-        </Route>
-        </Routes>
-      </BrowserRouter>
-    </ErrorBoundary>
+            {/* Protected Routes */}
+            <Route element={<PrivateRoute />}>
+              <Route path="/" element={<MainPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </ErrorBoundary>
+    </QueryClientProvider>
   </StrictMode>
 );
