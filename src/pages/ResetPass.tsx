@@ -1,48 +1,46 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "@/styles/ResetPass.css";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { resetPassword } from "@/services/reset_api"; 
-import { useNavigate } from "react-router-dom";
-
+import { useResetPassword } from "@/services/reset_api"; 
 
 const ResetPass = () => {
   const { token } = useParams();
+  const navigate = useNavigate();
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [message, setMessage] = useState("");
-  const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Use the TanStack Query mutation
+  const { mutate: resetPassword,  isError, error, isSuccess, data } = useResetPassword();
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     if (newPassword !== confirmPassword) {
-      setMessage("Passwords do not match!");
+      alert("Passwords do not match!");
       return;
     }
-  
+
     if (newPassword.length < 6) {
-      setMessage("Password must be at least 6 characters long!");
+      alert("Password must be at least 6 characters long!");
       return;
     }
-  
+
     if (!token) {
-      setMessage("Invalid password reset token.");
+      alert("Invalid password reset token.");
       return;
     }
-    
-    const result = await resetPassword(
-      { token: token, password: newPassword, password2: confirmPassword }
+
+    resetPassword(
+      { token, password: newPassword, password2: confirmPassword },
+      {
+        onSuccess: () => {
+          setTimeout(() => navigate("/login"), 1000);
+        },
+      }
     );
-    setMessage(result.message);
-  
-    if (result.success) {
-      setTimeout(() => {
-        navigate("/login"); 
-      }, 1000);
-    }
   };
 
   return (
@@ -79,9 +77,12 @@ const ResetPass = () => {
             </span>
           </div>
 
-          {message && <p className="message">{message}</p>}
+          {isError && <p className="message error">{error?.message || "Password reset failed."}</p>}
+          {isSuccess && <p className="message success">{data?.message}</p>}
 
-          <button type="submit">Reset Password</button>
+          <button type="submit" >
+            
+          </button>
         </form>
       </div>
     </div>

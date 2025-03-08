@@ -1,3 +1,4 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/middleware/api";
 
 interface IUpdatedData {
@@ -7,15 +8,16 @@ interface IUpdatedData {
   password2?: string;
 }
 
-export const updateUserProfile = async (
-  userId: number,
-  updatedData: IUpdatedData,
+export const useUpdateUserProfile = () => {
+  const queryClient = useQueryClient();
 
-) => {
-  try {
-    const response = await api.patch(`/users/${userId}/`, updatedData,);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
+  return useMutation({
+    mutationFn: async ({ userId, updatedData }: { userId: number; updatedData: IUpdatedData }) => {
+      const response = await api.patch(`/users/${userId}/`, updatedData);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["userProfile"] }); // Refresh user data
+    },
+  });
 };

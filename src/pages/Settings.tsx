@@ -2,121 +2,132 @@ import "@/styles/Settings.css";
 import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { updateUserProfile } from "@/services/settings_api";
-import { AxiosError } from "axios";
+import { useUpdateUserProfile } from "@/services/settings_api";
+import { useQuery } from "@tanstack/react-query";
+import api from "@/middleware/api";
 
 const SettingsPage: React.FC = () => {
-  const [userId, setUserId] = useState<number | null>(null);
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [password2, setPassword2] = useState("");
-  const [existingData, setExistingData] = useState<{ username: string; email: string } | null>(null);
-  const [showPassword1, setShowPassword1] = useState(false);
-const [showPassword2, setShowPassword2] = useState(false);
-  const [message, setMessage] = useState("");
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    password2: "",
+  });
+  const [showPassword1, setShowPassword1] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const storedUserId = localStorage.getItem("userId");
+  const userId = storedUserId ? parseInt(storedUserId, 10) : null;
+
+  // Fetch user data
+  const { data: user, isLoading: isFetching } = useQuery({
+    queryKey: ["userProfile"],
+    queryFn: async () => {
+      const res = await api.get(`/users/${userId}/`);
+      return res.data;
+    },
+    enabled: !!userId, // Only fetch if userId exists
+  });
 
   useEffect(() => {
-    const storedUserId = localStorage.getItem("userId");
-    const storedUsername = localStorage.getItem("username");
-    const storedEmail = localStorage.getItem("email");
-
-    if (storedUserId) setUserId(parseInt(storedUserId, 10));
-    if (storedUsername && storedEmail) {
-      setUsername(storedUsername);
-      setEmail(storedEmail);
-      setExistingData({ username: storedUsername, email: storedEmail });
+    if (user) {
+      setFormData({
+        username: user.username || "",
+        email: user.email || "",
+        password: "",
+        password2: "",
+      });
     }
-  }, []);
+  }, [user]);
 
-  const handleSaveChanges = async () => {
+  // Update user profile mutation
+  const { mutate: updateUserProfile,  isError, error, isSuccess } = useUpdateUserProfile();
+
+  // Handle form input change
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Submit updated profile
+  const handleSaveChanges = (e: React.FormEvent) => {
+    e.preventDefault();
+
     if (!userId) {
       setMessage("User ID not found. Please log in again.");
+      
       return;
     }
-  
-    const token = localStorage.getItem("access_token");
-    if (!token) {
-      setMessage("Authorization token missing. Please log in.");
+
+    if (formData.password && formData.password !== formData.password2) {
+      setMessage("Passwords do not match.");
+      console.log(message);
       return;
     }
-  
-    if (password.trim() && password !== password2) {
-      setMessage("Passwords do not match. Please try again.");
-      return;
-    }
-  
-    const updatedData = {
-      username: username.trim() || existingData?.username || "",
-      email: email.trim() || existingData?.email || "",
-      password: password.trim(),
-      password2: password2.trim(),
-    };
-  
-    try {
-      await updateUserProfile(userId, updatedData);
-      setMessage("Profile updated successfully!");
-      localStorage.setItem("username", updatedData.username);
-      localStorage.setItem("email", updatedData.email);
-    } catch (error) {
-      console.error("Profile Update Error:", error);
-      if (error instanceof AxiosError && error.response) {
-        setMessage(`Error: ${error.response.status} - ${error.response.data}`);
-      } else {
-        setMessage("Something went wrong. Please try again.");
-      }
-    }
+
+    updateUserProfile({ userId, updatedData: formData });
   };
-  
 
   return (
     <div className="settings-wrapper">
-  <div className="settings-container">
-    <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
-  </div>
-  <div className="settings-container">
-    <p className="change-password">Update Account</p>
-    <div className="settings-section">
-      <div className="input-group">
-        <input type="text" placeholder="New Username" value={username} onChange={(e) => setUsername(e.target.value)} />
-      </div>
-      <div className="input-group">
-        <input type="email" placeholder="New Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+      <div className="settings-container">
+        <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
       </div>
 
-      {/* New Password Input */}
-      <div className="input-group">
-        <input
-          type={showPassword1 ? "text" : "password"}
-          placeholder="New Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="button" className="toggle-password" onClick={() => setShowPassword1(!showPassword1)}>
-          {showPassword1 ? <FaEyeSlash /> : <FaEye />}
-        </button>
-      </div>
+      <div className="settings-container">
+        <p className="change-password">Update Account</p>
+        
+        {isFetching ? <p>Loading user data...</p> : null}
 
-      {/* Confirm Password Input */}
-      <div className="input-group">
-        <input
-          type={showPassword2 ? "text" : "password"}
-          placeholder="Confirm New Password"
-          value={password2}
-          onChange={(e) => setPassword2(e.target.value)}
-        />
-        <button type="button" className="toggle-password" onClick={() => setShowPassword2(!showPassword2)}>
-          {showPassword2 ? <FaEyeSlash /> : <FaEye />}
-        </button>
-      </div>
+        <form onSubmit={handleSaveChanges}>
+          <div className="settings-section">
+            <div className="input-group">
+              <input type="text" name="username" placeholder="New Username" value={formData.username} onChange={handleChange} />
+            </div>
+            <div className="input-group">
+              <input type="email" name="email" placeholder="New Email" value={formData.email} onChange={handleChange} />
+            </div>
 
-      <button className="confirm-button" onClick={handleSaveChanges}>Save Changes</button>
+            {/* New Password Input */}
+            <div className="input-group">
+              <input
+                type={showPassword1 ? "text" : "password"}
+                name="password"
+                placeholder="New Password"
+                value={formData.password}
+                onChange={handleChange}
+              />
+              <button type="button" className="toggle-password" onClick={() => setShowPassword1(!showPassword1)}>
+                {showPassword1 ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
+
+            {/* Confirm Password Input */}
+            <div className="input-group">
+              <input
+                type={showPassword2 ? "text" : "password"}
+                name="password2"
+                placeholder="Confirm New Password"
+                value={formData.password2}
+                onChange={handleChange}
+              />
+              <button type="button" className="toggle-password" onClick={() => setShowPassword2(!showPassword2)}>
+                {showPassword2 ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
+
+            {isError && <p className="message error">{(error as any)?.message || "Update failed."}</p>}
+            {isSuccess && <p className="message success">Profile updated successfully!</p>}
+
+            <button className="confirm-button" type="submit" >
+              Confirm
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
-
-    {message && <p className="message">{message}</p>}
-  </div>
-</div>
   );
 };
 
