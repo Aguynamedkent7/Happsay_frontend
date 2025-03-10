@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_BASE_URL,
+  baseURL: BASE_URL,
 });
 
 // request interceptor
@@ -37,7 +39,7 @@ api.interceptors.response.use(
       // If refresh token is available, send a request to refresh the access token
       if (refreshToken) {
         try {
-          const response = await axios.post(`/token/refresh/`, {
+          const response = await axios.post(`${BASE_URL}token/refresh/`, {
             refresh: refreshToken,
           });
 
