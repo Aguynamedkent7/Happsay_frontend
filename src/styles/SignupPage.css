@@ -25,7 +25,8 @@ body {
   text-align: center;
   max-width: 350px;
   width: 100%;
-  height: 150%;
+  max-height: 500px; /* Set a reasonable max height */
+  height: auto; /* Let it adjust based on content */
   overflow-y: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
