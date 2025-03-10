@@ -119,10 +119,12 @@ nav {
 
 .input-group label {
   font-size: 12px;
+  padding: 1px 4px;
   color: #fff;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   text-align: left;
   background: none;
+  width: 140px;
 }
 
 .input-group input,
@@ -135,7 +137,8 @@ nav {
   width: 100%;
   background: #f8f9fa;
   color: black;
-  height: 40px;
+  height: 44px;
+  margin-top: 15px;
 }
 
 .error-popup {
@@ -178,7 +181,7 @@ nav {
   cursor: pointer;
   border-radius: 5px;
   transition: background 0.3s ease;
-  height: 55px; /* Increased height */
+  height: 57px; /* Increased height */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -189,6 +192,7 @@ nav {
   font-size: 12px;
   color: #fff; /* Adjust color to match the theme */
   margin-top: 30px;
+  
 }
 
 .note-deadline strong {
