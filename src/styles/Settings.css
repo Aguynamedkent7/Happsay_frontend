@@ -113,24 +113,26 @@ html, body {
     width: 320px;
   }
   
-  .toggle-password {
-    position: absolute;
-    left: 290px;
-    top: 0px;
-    transform: translateY(-60%);
-    cursor: pointer;
-    color: #bdc3c7;
-    font-size: 18px;
-    transition: color 0.2s ease-in-out;
-    background: none;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 100%;
+  .toggle-password4 {
+  position: absolute;
+  right: 12px; /* Move it inside the input field */
+  top: 45%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  margin-left: -70px;
+  margin-top: 4px;
+  width: auto;
+  height: auto;  
   }
   
-  .toggle-password:hover {
+  .toggle-password4:hover {
     color: #ffffff;
   }

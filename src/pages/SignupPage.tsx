@@ -27,7 +27,7 @@ const InputField: React.FC<{
       {showPasswordToggle && (
         <button 
           type="button" 
-          className="toggle-password" 
+          className="toggle" 
           onClick={() => setShowPassword((prev) => !prev)}
         >
           {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}

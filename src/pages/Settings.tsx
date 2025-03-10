@@ -99,7 +99,7 @@ const SettingsPage: React.FC = () => {
                 value={formData.password}
                 onChange={handleChange}
               />
-              <button type="button" className="toggle-password" onClick={() => setShowPassword1(!showPassword1)}>
+              <button type="button" className="toggle-password4" onClick={() => setShowPassword1(!showPassword1)}>
                 {showPassword1 ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
@@ -113,7 +113,7 @@ const SettingsPage: React.FC = () => {
                 value={formData.password2}
                 onChange={handleChange}
               />
-              <button type="button" className="toggle-password" onClick={() => setShowPassword2(!showPassword2)}>
+              <button type="button" className="toggle-password4" onClick={() => setShowPassword2(!showPassword2)}>
                 {showPassword2 ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>

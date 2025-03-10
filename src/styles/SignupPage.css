@@ -69,9 +69,9 @@ body {
 }
 
 /* 🔥 Fixed Eye Icon Button */
-.toggle-password {
+.toggle {
   position: absolute;
-  right: -10px; /* Move it inside the input field */
+  right: 10px; /* Move it inside the input field */
   top: 45%;
   transform: translateY(-50%);
   background: none;
@@ -83,24 +83,24 @@ body {
   align-items: center;
   justify-content: center;
   padding: 5px;
-  margin-left: -10px;
-  margin-top: 30px;
+  margin-left: -70px;
+  margin-top: 3px;
   width: auto;
   height: auto;  
 }
 
-.toggle-password:hover {
+.toggle:hover {
   color: #000;
   background: none;
 }
 
-.toggle-password svg {
+.toggle svg {
   width: 24px;
   height: 24px;
   color: #666;
 }
 
-.toggle-password svg:hover {
+.toggle svg:hover {
   color: #000;
   background: none;
 }
