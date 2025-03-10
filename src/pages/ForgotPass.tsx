@@ -1,16 +1,19 @@
 import { useState } from "react";
 import "@/styles/ForgotPass.css";
 import { Link } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
-import { sendPasswordResetRequest } from "@/services/forgotpass_api"; // Import API function
+import { usePasswordReset } from "@/services/useAuth"; // Import API function
+import { useNavigate } from "react-router-dom";
 
 const ForgotPass = () => {
   const [email, setEmail] = useState("");
+  const navigate = useNavigate()
 
-  const { mutate, isSuccess, isPending, error } = useMutation({
-    mutationFn: sendPasswordResetRequest,
-  });
-
+  const { mutate, isSuccess, isPending, error } = usePasswordReset()
+  
+  const handleForgotPass = async(email: string) => {
+      mutate(email);
+      navigate("/");
+  };
   return (
     <div className="forget-password-container">
       <div className="logo"></div>
@@ -23,7 +26,7 @@ const ForgotPass = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            mutate(email);
+            handleForgotPass(email);
           }}
         >
           <input

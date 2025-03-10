@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "@/styles/SignupPage.css";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
-import { useSignup } from "@/services/Signup_api"; // Updated import
+import { useSignup } from "@/services/useMutation"; // Updated import
 
 const InputField: React.FC<{ 
   type: string; 
@@ -71,14 +71,14 @@ const SignupPage: React.FC = () => {
     }
 
     signup(formData, {
-      onSuccess: (data) => {
-        const msg_key = Object.keys(data)[0];
-        setMessage(`${data[msg_key]} Redirecting to login...`);
+      onSuccess: (response) => {
+        const msg_key = Object.keys(response)[0];
+        setMessage(`${response.data[msg_key]} Redirecting to login...`);
         setTimeout(() => navigate("/login"), 2000);
       },
-      onError: (err: any) => {
-        const firstErrorKey = Object.keys(err)[0];
-        setMessage(err[firstErrorKey] || "Signup failed. Please try again.");
+      onError: (error: any) => {
+        const firstErrorKey = Object.keys(error.response.data)[0];
+        setMessage(error.response.data[firstErrorKey] || "Signup failed. Please try again.");
       },
     });
   };

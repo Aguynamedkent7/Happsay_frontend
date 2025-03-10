@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "@/styles/ResetPass.css";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { useResetPassword } from "@/services/reset_api"; 
+import { useResetPassword } from "@/services/useMutation"; 
 
 const ResetPass = () => {
   const { token } = useParams();

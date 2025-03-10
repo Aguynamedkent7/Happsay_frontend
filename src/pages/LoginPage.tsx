@@ -2,10 +2,9 @@ import React, { useState } from "react";
 import "@/styles/LoginPage.css";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
-import api from "@/middleware/api";
 import { AxiosError } from "axios";
 import { Eye, EyeOff } from "lucide-react";
+import { useLogin } from "@/services/useAuth";
 
 const InputField: React.FC<{ 
   type: string; 
@@ -42,28 +41,23 @@ const Button: React.FC<{ text: string; type?: "button" | "submit" | "reset" }> =
   <button className="login-button" type={type}>{text}</button>
 );
 
-const loginUser = async ({ username, password }: { username: string; password: string }) => {
-  const response = await api.post("/login/", { username, password });
-  return response.data;
-};
+
+
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  
 
-  const { mutate, isPending, error } = useMutation({
-    mutationFn: loginUser,
-    onSuccess: (data) => {
-      console.log("Login successful:", data);
-      localStorage.setItem("userId", String(data.user.id));
-      localStorage.setItem("username", data.user.username);
-      localStorage.setItem("access_token", data.access);
-      localStorage.setItem("refresh_token", data.refresh);
-      localStorage.setItem("email", data.user.email);
+  const { mutate, isPending, error } = useLogin() as { mutate: any, isPending: boolean, error: AxiosError | null };
+
+  const handleLogin = async({ username, password }: { username: string; password: string }) => {
+      mutate({ username, password });
       navigate("/");
-    },
-  });
+  };
+
+  
 
   return (
     <div className="login-container">
@@ -73,7 +67,7 @@ const LoginPage: React.FC = () => {
         <form 
           onSubmit={(e) => { 
             e.preventDefault(); 
-            mutate({ username, password });
+            handleLogin({ username, password });
           }}
         >
           <InputField type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
@@ -81,8 +75,8 @@ const LoginPage: React.FC = () => {
           <Link to="/forgot-password" className="forgot-password">Forgot Password?</Link>
           <Button text={isPending ? "Logging in..." : "Log In"} type="submit" />
         </form>
-        {error instanceof AxiosError && error.response?.status === 400 && <p className="message">Invalid username or password</p>}
-        {error && !(error instanceof AxiosError) && <p className="message">An error occurred. Please try again later.</p>}
+        {error && (error as AxiosError).response?.status === 400 && <p className="message">Invalid username or password</p>}
+        {error && !(error ) && <p className="message">An error occurred. Please try again later.</p>}
         <p className="signup-text">
           Don’t have an account? <Link to="/signup">Sign up</Link>
         </p>

@@ -2,7 +2,7 @@ import "@/styles/Settings.css";
 import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useUpdateUserProfile } from "@/services/settings_api";
+import { useUpdateUserProfile } from "@/services/useMutation";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/middleware/api";
 

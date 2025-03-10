@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { 
-  useFetchTodos, 
   useAddNote, 
   useUpdateNoteTitle, 
   useUpdateNoteContent, 
   useDeleteNote, 
   useToggleComplete, 
   useToggleArchive,
-  logout, 
   Todo, NotesState
-} from "@/services/API_calls";
+} from "@/services/useMutation";
+import { useFetchTodos } from "@/services/useQuery";
+import { useLogout } from "@/services/useAuth";
 import "@/styles/MainPage.css";
 import "@/styles/NotePopup.css";
 import "@/styles/ProfilePopup.css";
@@ -28,6 +28,7 @@ export default function MainPage() {
   const [noteToDelete, setNoteToDelete] = useState<Todo | null>(null);
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   // ✅ Fetch notes using TanStack Query
   const { data: notes } = useFetchTodos();
@@ -91,10 +92,16 @@ export default function MainPage() {
   // ✅ Toggle Completion
   const handleToggleComplete = (id: number, is_done: boolean) => {
     toggleCompleteMutation.mutate({ id, is_done });
+    if (!is_done){
+      setSuccessMessage("Task Marked as Done")
+      setTimeout(() => setSuccessMessage(""), 3000);
+    }
+    
   
     // Close the popup if the toggled note was open
     if (selectedNote?.id === id) {
       setSelectedNote(null);
+      
     }
   };
   
@@ -123,6 +130,11 @@ export default function MainPage() {
   <div className="error-popup">
     <p>{errorMessage}</p>
   </div>
+)}  
+    {successMessage && (
+  <div className="error-popup">
+    <p>{successMessage}</p>
+  </div>
 )}
   
 
@@ -132,7 +144,7 @@ export default function MainPage() {
       <div className="profile-popup-content">
         <div className="profile-options">
           <Link to="/settings" className="option">⚙️ Settings</Link>
-          <button onClick={() => logout(navigate)} className="option">🚪 Log Out</button>
+          <button onClick={() => useLogout(navigate)} className="option">🚪 Log Out</button>
         </div>
       </div>
     </div>
@@ -188,6 +200,7 @@ export default function MainPage() {
                   onChange={(e) => {
                     e.stopPropagation();
                     handleToggleComplete(note.id, note.is_done);
+                    
                   }}
                   className="note-checkbox"
                 />

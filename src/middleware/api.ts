@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/',
+  baseURL: import.meta.env.VITE_BACKEND_BASE_URL,
 });
 
 // request interceptor
