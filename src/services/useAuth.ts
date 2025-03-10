@@ -6,6 +6,7 @@ import { useState } from "react";
 
 
 
+
 export type Todo = { id: number; title: string; content: string; is_done: boolean; is_archived: boolean; deadline: string };
 export type NotesState = { ToDo: Todo[]; Done: Todo[]; Archive: Todo[] };
 
@@ -28,6 +29,7 @@ export const useLogout = async (navigate: ReturnType<typeof useNavigate>) => {
   export const useLogin = () => {
     const [isPending, setIsPending] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const Navigate = useNavigate();
   
     const mutation = useMutation({
       mutationFn: async ({ username, password }: { username: string; password: string }) => {
@@ -50,6 +52,7 @@ export const useLogout = async (navigate: ReturnType<typeof useNavigate>) => {
           localStorage.setItem("access_token", data.access);
           localStorage.setItem("refresh_token", data.refresh);
           localStorage.setItem("email", data.user.email);
+          Navigate("/")
         },
       });
     

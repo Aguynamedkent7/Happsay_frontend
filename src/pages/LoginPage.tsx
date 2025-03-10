@@ -47,14 +47,14 @@ const Button: React.FC<{ text: string; type?: "button" | "submit" | "reset" }> =
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+ 
   
 
   const { mutate, isPending, error } = useLogin() as { mutate: any, isPending: boolean, error: AxiosError | null };
 
   const handleLogin = async({ username, password }: { username: string; password: string }) => {
       mutate({ username, password });
-      navigate("/");
+      
   };
 
   
