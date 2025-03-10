@@ -143,6 +143,7 @@ body {
   font-size: 1rem;
   cursor: pointer;
   margin-top: 10px;
+  margin-bottom: 20px;
 }
 
 .signup-button:hover {
