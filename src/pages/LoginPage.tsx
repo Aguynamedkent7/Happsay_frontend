@@ -74,8 +74,8 @@ const LoginPage: React.FC = () => {
           <Link to="/forgot-password" className="forgot-password">Forgot Password?</Link>
           <Button text={isPending ? "Logging in..." : "Log In"} type="submit" />
         </form>
-        {error && (error as AxiosError).response?.status === 400 && <p className="message">Invalid username or password</p>}
-        {error && !(error ) && <p className="message">An error occurred. Please try again later.</p>}
+        {error && (error as AxiosError).response?.status !== 400 && <p className="message">Invalid username or password</p>}
+        
         <p className="signup-text">
           Don’t have an account? <Link to="/signup">Sign up</Link>
         </p>
