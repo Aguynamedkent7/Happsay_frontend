@@ -30,8 +30,8 @@ export default function MainPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  // ✅ Fetch notes using TanStack Query
-  const { data: notes } = useFetchTodos();
+ const { data: notes } = useFetchTodos();
+
 
   // ✅ Mutations for notes
   const addNoteMutation = useAddNote();
@@ -181,42 +181,44 @@ export default function MainPage() {
       )}
 
       {/* Notes List */}
-      <div className="notes-container">
-      {!notes || notes[selectedTab as keyof NotesState]?.length === 0 ? (
-          <p className="empty-message">
-        {selectedTab === "Done"
+<div className="notes-container">
+  {!notes || notes[selectedTab as keyof NotesState]?.length === 0 ? (
+    <p className="empty-message">
+      {selectedTab === "Done"
         ? "No completed tasks yet. Keep going!"
         : selectedTab === "Archive"
         ? "No archived notes. Archive a note to store it here."
-        : "Its quiet around here....Start planning your life now!"}
+        : "It's quiet around here... Start planning your life now!"}
     </p>
-        ) : (
-          notes[selectedTab as keyof NotesState]?.map((note) => (
-            <div key={note.id} className="note-card">
-              {selectedTab !== "Archive" && (
-                <input
-                  type="checkbox"
-                  checked={note.is_done}
-                  onChange={(e) => {
-                    e.stopPropagation();
-                    handleToggleComplete(note.id, note.is_done);
-                    
-                  }}
-                  className="note-checkbox"
-                />
-              )}
-              <div className="note-info" onClick={() => setSelectedNote(note)}>
-                <strong className="note-title">{note.title}</strong>
-                <p className="note-preview">{note.content.slice(0, 30)}...</p>
-                <div className="note-deadline">
-  <strong>Deadline:</strong> {note.deadline ? note.deadline : "No deadline"}
+  ) : (
+    notes[selectedTab as keyof NotesState]
+      ?.slice() // Prevent modifying the original array
+      .sort((a, b) => a.id - b.id) // Sort notes by ID to keep a consistent order
+      .map((note) => (
+        <div key={note.id} className="note-card">
+          {selectedTab !== "Archive" && (
+            <input
+              type="checkbox"
+              checked={note.is_done}
+              onChange={(e) => {
+                e.stopPropagation();
+                handleToggleComplete(note.id, note.is_done);
+              }}
+              className="note-checkbox"
+            />
+          )}
+          <div className="note-info" onClick={() => setSelectedNote(note)}>
+            <strong className="note-title">{note.title}</strong>
+            <p className="note-preview">{note.content.slice(0, 30)}...</p>
+            <div className="note-deadline">
+              <strong>Deadline:</strong> {note.deadline ? note.deadline : "No deadline"}
+            </div>
+          </div>
+        </div>
+      ))
+  )}
 </div>
 
-              </div>
-            </div>
-          ))
-        )}
-      </div>
     </main>
   </div>
 
