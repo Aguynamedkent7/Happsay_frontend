@@ -82,11 +82,11 @@ html, body {
     outline: none; 
     font-size: 16px; 
     margin-top: 5px;
+    position: absolute;
   }
 
     .input-group input::placeholder { 
         color: #E6E7E6BF; 
-        margin-top: 5px;
         position: absolute;
        
     }
