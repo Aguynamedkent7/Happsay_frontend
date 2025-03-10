@@ -37,7 +37,7 @@ api.interceptors.response.use(
       // If refresh token is available, send a request to refresh the access token
       if (refreshToken) {
         try {
-          const response = await axios.post(`https://happsay-backend-dev.ap-southeast-1.elasticbeanstalk.com/token/refresh/`, {
+          const response = await axios.post(`/token/refresh/`, {
             refresh: refreshToken,
           });
 

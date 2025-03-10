@@ -26,11 +26,12 @@ export default function MainPage() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [noteDeadline, setNoteDeadline] = useState("");
   const [noteToDelete, setNoteToDelete] = useState<Todo | null>(null);
-  const navigate = useNavigate();
+  const [noteToArchive, setNoteToArchive] = useState<Todo | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const navigate = useNavigate();
 
- const { data: notes } = useFetchTodos();
+  const { data: notes } = useFetchTodos();
 
 
   // ✅ Mutations for notes
@@ -106,14 +107,22 @@ export default function MainPage() {
   };
   
   // ✅ Toggle Archive
-  const handleToggleArchive = (id: number, is_archived: boolean) => {
-    console.log("Toggling archive for note:", id, is_archived);
+  const handleToggleArchive = async (id: number, is_archived: boolean) => {
     toggleArchiveMutation.mutate({ id, is_archived });
-  
-    // Close popup after action
     setSelectedNote(null);
+    
   };
   
+  const confirmArchiveNote = (note: Todo) => {
+    setNoteToArchive(note);
+  };
+  
+  const handleArchiveConfirmed = async () => {
+    if (noteToArchive) {
+      await handleToggleArchive(noteToArchive.id, noteToArchive.is_archived);
+    }
+    setNoteToArchive(null); // Close the archive confirmation popup
+  };
 
 
   
@@ -251,7 +260,12 @@ export default function MainPage() {
           <button className="delete-btn" onClick={() => confirmDeleteNote(selectedNote!)}>Delete</button>
           <button 
             className="archive-btn" 
-            onClick={() => selectedNote && handleToggleArchive(selectedNote.id, selectedNote.is_archived)}
+            onClick={
+              () => {
+                return !selectedNote.is_archived ?
+                  confirmArchiveNote(selectedNote!) :
+                  handleToggleArchive(selectedNote.id, selectedNote.is_archived);
+              }}
           >
             {selectedTab === "Archive" ? "Unarchive" : "Archive"}
           </button>
@@ -263,12 +277,21 @@ export default function MainPage() {
   {noteToDelete && (
   <div className="delete-popup">
     <div className="popup-content">
-      <p>Are you sure you want w delete "{noteToDelete.title}"?</p>
+      <p>Are you sure you want to delete "{noteToDelete.title}"?</p>
       <button className="confirm-btn" onClick={handleDeleteConfirmed}>Yes, Delete</button>
       <button className="cancel-btn" onClick={() => setNoteToDelete(null)}>Cancel</button>
     </div>
   </div>
-)}
+  )}
+  {noteToArchive && (
+  <div className="delete-popup">
+    <div className="popup-content">
+      <p>Are you sure you want to archive "{noteToArchive.title}"?</p>
+      <button className="confirm-btn-archive" onClick={handleArchiveConfirmed}>Yes, Archive</button>
+      <button className="cancel-btn" onClick={() => setNoteToArchive(null)}>Cancel</button>
+    </div>
+  </div>
+  )}
 
 </div>
 

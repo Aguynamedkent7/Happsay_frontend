@@ -137,7 +137,7 @@
     color: black;
   }
   
-  .confirm-btn, .cancel-btn {
+  .confirm-btn, .confirm-btn-archive, .cancel-btn {
     margin: 10px;
     padding: 10px 15px;
     border: none;
@@ -148,6 +148,12 @@
   
   .confirm-btn {
     background-color: red;
+    color: white;
+    
+  }
+
+  .confirm-btn-archive {
+    background-color: blue;
     color: white;
     
   }
