@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import "@/styles/LoginPage.css";
 import { Link } from "react-router-dom";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import { Eye, EyeOff } from "lucide-react";
 import { useLogin } from "@/services/useAuth";
+import { Bounce, ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import styles
 
 const InputField: React.FC<{ 
   type: string; 
@@ -40,23 +42,41 @@ const Button: React.FC<{ text: string; type?: "button" | "submit" | "reset" }> =
   <button className="login-button" type={type}>{text}</button>
 );
 
-
-
-
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
- 
-  
 
-  const { mutate, isPending, error } = useLogin() as { mutate: any, isPending: boolean, error: AxiosError | null };
+  const { mutate, isPending } = useLogin();
 
-  const handleLogin = async({ username, password }: { username: string; password: string }) => {
-      mutate({ username, password });
-      
+  const handleLogin = ({ username, password }: { username: string; password: string }) => {
+    mutate(
+      { username, password },
+      {
+        onSuccess: () => {
+          toast.success("Login successful! 🎉");
+        },
+        onError: (error: Error) => {
+          if (axios.isAxiosError(error)) {
+            if (error.response?.status === 400) {
+              toast.error("Invalid username or password!", {position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: false,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,});
+            } else {
+              toast.error("Something went wrong. Please try again.");
+            }
+          } else {
+            toast.error("An unexpected error occurred.");
+          }
+        },
+      }
+    );
   };
-
-  
 
   return (
     <div className="login-container">
@@ -74,11 +94,10 @@ const LoginPage: React.FC = () => {
           <Link to="/forgot-password" className="forgot-password">Forgot Password?</Link>
           <Button text={isPending ? "Logging in..." : "Log In"} type="submit" />
         </form>
-        {error && (error as AxiosError).response?.status !== 400 && <p className="message">Invalid username or password</p>}
-        
         <p className="signup-text">
           Don’t have an account? <Link to="/signup">Sign up</Link>
         </p>
+        <ToastContainer />
       </div>
     </div>
   );

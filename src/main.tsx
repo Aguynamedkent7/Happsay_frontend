@@ -9,11 +9,10 @@ import ResetPass from './pages/ResetPass';
 import SettingsPage from './pages/Settings';
 import ErrorBoundary from './components/ErrorBoundary';
 import PrivateRoute from './components/PrivateRoute';
-import  RedirectToMainPageIfAuthenticatedRoute from './components/RedirectToMainPageIfAuthenticatedRoute';
+import RedirectToMainPageIfAuthenticatedRoute from './components/RedirectToMainPageIfAuthenticatedRoute';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
-
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -34,7 +33,6 @@ createRoot(document.getElementById("root")!).render(
             <Route element={<RedirectToMainPageIfAuthenticatedRoute />}>
               <Route path="/login" element={<LoginPage />} />
             </Route>
-
           </Routes>
         </BrowserRouter>
       </ErrorBoundary>
