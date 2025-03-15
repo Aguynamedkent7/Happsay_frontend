@@ -73,9 +73,8 @@ const SignupPage: React.FC = () => {
 
     signup(formData, {
       onSuccess: (response) => {
-        const msg_key = Object.keys(response.data)[0];
+        const msg_key = Object.keys(response)[0];
         setMessage(`${response.data[msg_key]} Redirecting to login...`);
-        toast.success(response.data[msg_key]);
         setTimeout(() => navigate("/login"), 2000);
       },
       onError: (error: any) => {
@@ -95,10 +94,13 @@ const SignupPage: React.FC = () => {
         <p className="start">Start creating planned lists today!</p>
 
         <form onSubmit={handleSignup}>
-          <InputField type="text" name="email" placeholder="Email" value={formData.email} onChange={handleChange} />
-          <InputField type="text" name="username" placeholder="Username" value={formData.username} onChange={handleChange} />
-          <InputField type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} showPasswordToggle />
-          <InputField type="password" name="confirmPassword" placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} showPasswordToggle />
+  <InputField type="text" name="email" placeholder="Email" value={formData.email} onChange={handleChange} />
+  <InputField type="text" name="username" placeholder="Username" value={formData.username} onChange={handleChange} />
+  <InputField type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} showPasswordToggle />
+  <InputField type="password" name="confirmPassword" placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} showPasswordToggle />
+</form>
+
+
           <Link to="/login" className="tet">Already have an account?</Link>
           <Button text="Sign Up" type="submit" />
         </form>

@@ -3,16 +3,28 @@ import "@/styles/ForgotPass.css";
 import { Link } from "react-router-dom";
 import { usePasswordReset } from "@/services/useAuth"; // Import API function
 import { useNavigate } from "react-router-dom";
+import { Bounce, ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import styles
 
 const ForgotPass = () => {
   const [email, setEmail] = useState("");
   const navigate = useNavigate()
 
-  const { mutate, isSuccess, isPending, error } = usePasswordReset()
+  const { mutate, isSuccess, isPending } = usePasswordReset()
   
-  const handleForgotPass = async(email: string) => {
-      mutate(email);
-      navigate("/");
+  const handleForgotPass = async (email: string) => {
+    mutate(email, {
+      onSuccess: () => {
+        toast.success("Password reset link sent!", { position: "top-center", autoClose: 2000, hideProgressBar: true, closeOnClick: true, pauseOnHover: true, draggable: false, progress: undefined, theme: "light", closeButton: false, transition: Bounce }
+        );
+        setTimeout(() => navigate("/"), 1500);
+        
+      },
+      onError: (error) => {
+        toast.error(` ${error.message || "Something went wrong"}`, { position: "top-center", autoClose: 2000, hideProgressBar: true, closeOnClick: true, pauseOnHover: true, draggable: false, progress: undefined, theme: "light", closeButton: false, transition: Bounce }
+        );
+      },
+    });
   };
   return (
     <div className="forget-password-container">
@@ -39,12 +51,12 @@ const ForgotPass = () => {
           <button type="submit" disabled={isSuccess || isPending}>
             {isPending ? "Sending..." : isSuccess ? "Already Sent" : "Send Reset Request"}
           </button>
-          {isSuccess && <p className="success-message">Password reset email sent!</p>}
-          {error && <p className="error-message">{(error as Error).message}</p>}
+          
           <Link to="/login" className="info">
             Back to Login
           </Link>
         </form>
+        <ToastContainer/>
       </div>
     </div>
   );
