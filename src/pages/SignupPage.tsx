@@ -3,6 +3,8 @@ import "@/styles/SignupPage.css";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { useSignup } from "@/services/useMutation"; // Updated import
+import { Bounce, ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import styles
 
 const InputField: React.FC<{ 
   type: string; 
@@ -36,7 +38,6 @@ const InputField: React.FC<{
     </div>
   );
 };
-
 
 const Button: React.FC<{ text: string; type?: "button" | "submit" | "reset" }> = ({ text, type = "button" }) => (
   <button className="signup-button" type={type}>{text}</button>
@@ -72,13 +73,16 @@ const SignupPage: React.FC = () => {
 
     signup(formData, {
       onSuccess: (response) => {
-        const msg_key = Object.keys(response)[0];
+        const msg_key = Object.keys(response.data)[0];
         setMessage(`${response.data[msg_key]} Redirecting to login...`);
+        toast.success(response.data[msg_key]);
         setTimeout(() => navigate("/login"), 2000);
       },
       onError: (error: any) => {
         const firstErrorKey = Object.keys(error.response.data)[0];
-        setMessage(error.response.data[firstErrorKey] || "Signup failed. Please try again.");
+        const errorMessage = error.response.data[firstErrorKey] || "Sign up failed. Please try again.";
+        toast.error(errorMessage);
+        setMessage(errorMessage);
       },
     });
   };
@@ -91,20 +95,27 @@ const SignupPage: React.FC = () => {
         <p className="start">Start creating planned lists today!</p>
 
         <form onSubmit={handleSignup}>
-        <form onSubmit={handleSignup}>
-  <InputField type="text" name="email" placeholder="Email" value={formData.email} onChange={handleChange} />
-  <InputField type="text" name="username" placeholder="Username" value={formData.username} onChange={handleChange} />
-  <InputField type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} showPasswordToggle />
-  <InputField type="password" name="confirmPassword" placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} showPasswordToggle />
-</form>
-
-
+          <InputField type="text" name="email" placeholder="Email" value={formData.email} onChange={handleChange} />
+          <InputField type="text" name="username" placeholder="Username" value={formData.username} onChange={handleChange} />
+          <InputField type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} showPasswordToggle />
+          <InputField type="password" name="confirmPassword" placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} showPasswordToggle />
           <Link to="/login" className="tet">Already have an account?</Link>
           <Button text="Sign Up" type="submit" />
         </form>
 
         {message && <p className="message">{message}</p>}
       </div>
+      <ToastContainer 
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={true}
+        closeOnClick={true}
+        closeButton={false}
+        draggable={false}
+        pauseOnHover={true}
+        theme="light"
+        transition={Bounce}
+      />
     </div>
   );
 };
