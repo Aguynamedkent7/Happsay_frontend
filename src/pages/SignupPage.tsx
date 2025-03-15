@@ -77,10 +77,16 @@ const handleSignup = (e: React.FormEvent) => {
   // 🔹 Check for empty fields
   Object.entries(formData).forEach(([key, value]) => {
     if (!value) {
-      const friendlyKey = errorMessagesMap[key] || key; // Use friendly key if available
+      const friendlyKey = errorMessagesMap[key] || key;
       errors.push(`${friendlyKey} is required.`);
     }
   });
+
+  // 🔹 Check for valid email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (formData.email && !emailRegex.test(formData.email)) {
+    errors.push("Email must be a valid email address.");
+  }
 
   // 🔹 Check if passwords match
   if (formData.password !== formData.confirmPassword) {
@@ -89,7 +95,7 @@ const handleSignup = (e: React.FormEvent) => {
 
   // ❌ Show all errors and stop form submission
   if (errors.length > 0) {
-    errors.forEach((error) => toast.error(error));
+    errors.forEach((error) => toast.error(error)); // Now all errors show
     return;
   }
 
@@ -102,7 +108,7 @@ const handleSignup = (e: React.FormEvent) => {
     },
     onError: (error: any) => {
       Object.entries(error.response.data).forEach(([key, message]) => {
-        const friendlyKey = errorMessagesMap[key] || key; // Use friendly key
+        const friendlyKey = errorMessagesMap[key] || key;
         const errorMessage = Array.isArray(message) ? message.join(", ") : message;
         toast.error(`${friendlyKey}: ${errorMessage}`);
       });
