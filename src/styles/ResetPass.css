@@ -59,10 +59,12 @@
   
   span {
     position: absolute;
-    right: 10px;
+    right: 20px;
     cursor: pointer;
     color: #666;
+    top: 20px;
   }
+  
   
   button {
     width: 100%;
