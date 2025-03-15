@@ -8,6 +8,6 @@ export interface IUserData {
 export interface IResetPass {
     token: string;
     password: string;
-    password2: string;
+    confirm_password: string;
   }
 

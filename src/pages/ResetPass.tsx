@@ -34,7 +34,7 @@ const ResetPass = () => {
     }
 
     resetPassword(
-      { token, password: newPassword, password2: confirmPassword },
+      { token, password: newPassword, confirm_password: confirmPassword },
       {
         onSuccess: () => {
           toast.success("Password reset successful! Redirecting to login page...",  { position: "top-center", autoClose: 2000, hideProgressBar: true, closeOnClick: true, pauseOnHover: true, draggable: false, progress: undefined, theme: "light", closeButton: false, transition: Bounce }
