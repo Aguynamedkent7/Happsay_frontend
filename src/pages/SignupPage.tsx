@@ -54,7 +54,7 @@ const SignupPage: React.FC = () => {
     confirmPassword: "",
   });
 
-  const [message, setMessage] = useState("");
+
 
   // Handle form input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,29 +62,53 @@ const SignupPage: React.FC = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle signup submission
-  const handleSignup = (e: React.FormEvent) => {
-    e.preventDefault();
+  const errorMessagesMap: Record<string, string> = {
+  username: "Username",
+  password: "Password",
+  email: "Email",
+  confirmPassword: "Confirm Password", // Update key to match frontend
+};
 
-    if (formData.password !== formData.confirmPassword) {
-      setMessage("Passwords do not match.");
-      return;
+const handleSignup = (e: React.FormEvent) => {
+  e.preventDefault();
+
+  const errors: string[] = [];
+
+  // 🔹 Check for empty fields
+  Object.entries(formData).forEach(([key, value]) => {
+    if (!value) {
+      const friendlyKey = errorMessagesMap[key] || key; // Use friendly key if available
+      errors.push(`${friendlyKey} is required.`);
     }
+  });
 
-    signup(formData, {
-      onSuccess: (response) => {
-        const msg_key = Object.keys(response)[0];
-        setMessage(`${response.data[msg_key]} Redirecting to login...`);
-        setTimeout(() => navigate("/login"), 2000);
-      },
-      onError: (error: any) => {
-        const firstErrorKey = Object.keys(error.response.data)[0];
-        const errorMessage = error.response.data[firstErrorKey] || "Sign up failed. Please try again.";
-        toast.error(errorMessage);
-        setMessage(errorMessage);
-      },
-    });
-  };
+  // 🔹 Check if passwords match
+  if (formData.password !== formData.confirmPassword) {
+    errors.push(`${errorMessagesMap.confirmPassword}: Passwords do not match.`);
+  }
+
+  // ❌ Show all errors and stop form submission
+  if (errors.length > 0) {
+    errors.forEach((error) => toast.error(error));
+    return;
+  }
+
+  // ✅ Proceed with signup request
+  signup(formData, {
+    onSuccess: (response) => {
+      const msg_key = Object.keys(response.data)[0];
+      toast.success(response.data[msg_key]);
+      setTimeout(() => navigate("/login"), 4000);
+    },
+    onError: (error: any) => {
+      Object.entries(error.response.data).forEach(([key, message]) => {
+        const friendlyKey = errorMessagesMap[key] || key; // Use friendly key
+        const errorMessage = Array.isArray(message) ? message.join(", ") : message;
+        toast.error(`${friendlyKey}: ${errorMessage}`);
+      });
+    },
+  });
+};
 
   return (
     <div className="signup-container">
@@ -92,20 +116,14 @@ const SignupPage: React.FC = () => {
         <img src="/static/images/Happsay Logo.webp" alt="App Logo" className="logo" />
         <h2 className="title">Happsay: Plan your life</h2>
         <p className="start">Start creating planned lists today!</p>
-
         <form onSubmit={handleSignup}>
-  <InputField type="text" name="email" placeholder="Email" value={formData.email} onChange={handleChange} />
-  <InputField type="text" name="username" placeholder="Username" value={formData.username} onChange={handleChange} />
-  <InputField type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} showPasswordToggle />
-  <InputField type="password" name="confirmPassword" placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} showPasswordToggle />
-</form>
-
-
+          <InputField type="text" name="email" placeholder="Email" value={formData.email} onChange={handleChange} />
+          <InputField type="text" name="username" placeholder="Username" value={formData.username} onChange={handleChange} />
+          <InputField type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} showPasswordToggle />
+          <InputField type="password" name="confirmPassword" placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} showPasswordToggle />
           <Link to="/login" className="tet">Already have an account?</Link>
           <Button text="Sign Up" type="submit" />
         </form>
-
-        {message && <p className="message">{message}</p>}
       </div>
       <ToastContainer 
         position="top-center"

@@ -124,7 +124,7 @@ export const useToggleComplete = () => {
           username,
           email,
           password,
-          password2: confirmPassword,
+          confirm_password: confirmPassword,
         });
         return response;
         
