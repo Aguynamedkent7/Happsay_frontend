@@ -3,7 +3,8 @@ import "@/styles/LoginPage.css";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { useLogin } from "@/services/useAuth";
-import { Bounce, ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
+import Toast from "@/components/ui/ToastContainer";
 import "react-toastify/dist/ReactToastify.css"; // Import styles
 
 const InputField: React.FC<{ 
@@ -85,18 +86,8 @@ const LoginPage: React.FC = () => {
         <p className="signup-text">
           Don’t have an account? <Link to="/signup">Sign up</Link>
         </p>
-        <ToastContainer 
-        position ="top-center"
-        autoClose={2000}
-        hideProgressBar={true}
-        closeOnClick={true}
-        closeButton={false}
-        draggable={false}
-        pauseOnHover={true}
-        theme="light"
-        transition={Bounce}
-        />
       </div>
+      <Toast />
     </div>
   );
 };

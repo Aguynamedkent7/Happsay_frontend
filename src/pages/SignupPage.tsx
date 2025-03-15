@@ -3,8 +3,9 @@ import "@/styles/SignupPage.css";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { useSignup } from "@/services/useMutation"; 
-import { Bounce, ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; 
+import Toast from "@/components/ui/ToastContainer";
 
 const InputField: React.FC<{ 
   type: string; 
@@ -131,8 +132,7 @@ const handleSignup = (e: React.FormEvent) => {
           <Button text="Sign Up" type="submit" />
         </form>
       </div>
-      <ToastContainer position="top-center" autoClose={2000} hideProgressBar={true} closeOnClick={true} closeButton={false} draggable={false} pauseOnHover={true} theme="light" transition={Bounce}
-      />
+      <Toast />
     </div>
   );
 };

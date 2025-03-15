@@ -5,8 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { useUpdateUserProfile } from "@/services/useMutation";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/middleware/api";
-import { Bounce, ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Toast from "@/components/ui/ToastContainer";
 
 const SettingsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -131,17 +132,7 @@ const SettingsPage: React.FC = () => {
           </div>
         </form>
       </div>
-      <ToastContainer 
-        position="top-center"
-        autoClose={2000}
-        hideProgressBar={true}
-        closeOnClick={true}
-        closeButton={false}
-        draggable={false}
-        pauseOnHover={true}
-        theme="light"
-        transition={Bounce}
-      />
+      <Toast />
     </div>
   );
 };
