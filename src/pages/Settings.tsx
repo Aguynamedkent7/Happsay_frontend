@@ -12,7 +12,7 @@ const SettingsPage: React.FC = () => {
     username: "",
     email: "",
     password: "",
-    password2: "",
+    confirm_password: "",
   });
   const [showPassword1, setShowPassword1] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
@@ -37,7 +37,7 @@ const SettingsPage: React.FC = () => {
         username: user.username || "",
         email: user.email || "",
         password: "",
-        password2: "",
+        confirm_password: "",
       });
     }
   }, [user]);
@@ -61,7 +61,7 @@ const SettingsPage: React.FC = () => {
       return;
     }
 
-    if (formData.password && formData.password !== formData.password2) {
+    if (formData.password && formData.password !== formData.confirm_password) {
       setMessage("Passwords do not match.");
       console.log(message);
       return;
@@ -108,9 +108,9 @@ const SettingsPage: React.FC = () => {
             <div className="input-group">
               <input
                 type={showPassword2 ? "text" : "password"}
-                name="password2"
+                name="confirm_password"
                 placeholder="Confirm New Password"
-                value={formData.password2}
+                value={formData.confirm_password}
                 onChange={handleChange}
               />
               <button type="button" className="toggle-password4" onClick={() => setShowPassword2(!showPassword2)}>
