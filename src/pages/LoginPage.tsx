@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "@/styles/LoginPage.css";
 import { Link } from "react-router-dom";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 import { useLogin } from "@/services/useAuth";
 import { Bounce, ToastContainer, toast } from "react-toastify";
@@ -66,6 +66,7 @@ const LoginPage: React.FC = () => {
                 draggable: false,
                 progress: undefined,
                 theme: "light",
+                closeButton: false, 
                 transition: Bounce,});
             } else {
               toast.error("Something went wrong. Please try again.");
