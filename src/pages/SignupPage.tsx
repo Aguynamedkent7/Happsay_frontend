@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import "@/styles/SignupPage.css";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
-import { useSignup } from "@/services/useMutation"; // Updated import
+import { useSignup } from "@/services/useMutation"; 
 import { Bounce, ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // Import styles
+import "react-toastify/dist/ReactToastify.css"; 
 
 const InputField: React.FC<{ 
   type: string; 
-  name: string;  // Added name prop
+  name: string;  
   placeholder: string; 
   value: string; 
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -21,7 +21,7 @@ const InputField: React.FC<{
       <input
         className="signup-input-field"
         type={showPasswordToggle && showPassword ? "text" : type}
-        name={name}  // Added this line
+        name={name}  
         placeholder={placeholder}
         value={value}
         onChange={onChange}
@@ -66,7 +66,7 @@ const SignupPage: React.FC = () => {
   username: "Username",
   password: "Password",
   email: "Email",
-  confirmPassword: "Confirm Password", // Update key to match frontend
+  confirmPassword: "Confirm Password", 
 };
 
 const handleSignup = (e: React.FormEvent) => {
@@ -131,16 +131,7 @@ const handleSignup = (e: React.FormEvent) => {
           <Button text="Sign Up" type="submit" />
         </form>
       </div>
-      <ToastContainer 
-        position="top-center"
-        autoClose={2000}
-        hideProgressBar={true}
-        closeOnClick={true}
-        closeButton={false}
-        draggable={false}
-        pauseOnHover={true}
-        theme="light"
-        transition={Bounce}
+      <ToastContainer position="top-center" autoClose={2000} hideProgressBar={true} closeOnClick={true} closeButton={false} draggable={false} pauseOnHover={true} theme="light" transition={Bounce}
       />
     </div>
   );
