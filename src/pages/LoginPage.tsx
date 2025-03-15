@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "@/styles/LoginPage.css";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 import { useLogin } from "@/services/useAuth";
 import { Bounce, ToastContainer, toast } from "react-toastify";
@@ -55,24 +54,12 @@ const LoginPage: React.FC = () => {
         onSuccess: () => {
           toast.success("Login successful! 🎉");
         },
-        onError: (error: Error) => {
-          if (axios.isAxiosError(error)) {
-            if (error.response?.status === 400) {
-              toast.error("Invalid username or password!", {position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: false,
-                progress: undefined,
-                theme: "light",
-                closeButton: false, 
-                transition: Bounce,});
-            } else {
-              toast.error("Something went wrong. Please try again.");
-            }
-          } else {
-            toast.error("An unexpected error occurred.");
+        onError: (error: any) => {
+          if (error.response.status === 400) {
+            toast.error("Invalid username or password!");
+          }
+          else {
+            toast.error("An unexpected error occurred. Please try again");
           }
         },
       }
@@ -98,7 +85,17 @@ const LoginPage: React.FC = () => {
         <p className="signup-text">
           Don’t have an account? <Link to="/signup">Sign up</Link>
         </p>
-        <ToastContainer />
+        <ToastContainer 
+        position ="top-center"
+        autoClose={2000}
+        hideProgressBar={true}
+        closeOnClick={true}
+        closeButton={false}
+        draggable={false}
+        pauseOnHover={true}
+        theme="light"
+        transition={Bounce}
+        />
       </div>
     </div>
   );
