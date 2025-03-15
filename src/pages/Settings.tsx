@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { useUpdateUserProfile } from "@/services/useMutation";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/middleware/api";
+import { Bounce, ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SettingsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -16,7 +18,6 @@ const SettingsPage: React.FC = () => {
   });
   const [showPassword1, setShowPassword1] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
-  const [message, setMessage] = useState("");
 
   const storedUserId = localStorage.getItem("userId");
   const userId = storedUserId ? parseInt(storedUserId, 10) : null;
@@ -43,7 +44,7 @@ const SettingsPage: React.FC = () => {
   }, [user]);
 
   // Update user profile mutation
-  const { mutate: updateUserProfile,  isError, error, isSuccess } = useUpdateUserProfile();
+  const { mutate: updateUserProfile } = useUpdateUserProfile();
 
   // Handle form input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,18 +57,24 @@ const SettingsPage: React.FC = () => {
     e.preventDefault();
 
     if (!userId) {
-      setMessage("User ID not found. Please log in again.");
-      
+      toast.error("User ID not found. Please log in again.");
       return;
     }
 
     if (formData.password && formData.password !== formData.confirm_password) {
-      setMessage("Passwords do not match.");
-      console.log(message);
+      toast.error("Passwords do not match.");
       return;
     }
 
-    updateUserProfile({ userId, updatedData: formData });
+    updateUserProfile({ userId, updatedData: formData }, {
+      onSuccess: () => {
+        toast.success("Profile updated successfully!");
+      },
+      onError: (error: any) => {
+        const errorMessage = (error as any)?.message || "Update failed.";
+        toast.error(errorMessage);
+      },
+    });
   };
 
   return (
@@ -118,15 +125,23 @@ const SettingsPage: React.FC = () => {
               </button>
             </div>
 
-            {isError && <p className="message error">{(error as any)?.message || "Update failed."}</p>}
-            {isSuccess && <p className="message success">Profile updated successfully!</p>}
-
-            <button className="confirm-button" type="submit" >
+            <button className="confirm-button" type="submit">
               Confirm
             </button>
           </div>
         </form>
       </div>
+      <ToastContainer 
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={true}
+        closeOnClick={true}
+        closeButton={false}
+        draggable={false}
+        pauseOnHover={true}
+        theme="light"
+        transition={Bounce}
+      />
     </div>
   );
 };
