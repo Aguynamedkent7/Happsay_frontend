@@ -37,12 +37,8 @@ const ResetPass = () => {
       { token, password: newPassword, confirm_password: confirmPassword },
       {
         onSuccess: () => {
-          toast.success("Password reset successful! Redirecting to login page...");
-          setTimeout(() => navigate("/login"), 1000);
+          setTimeout(() => navigate("/login"), 2000);
         },
-        onError: (error: any) => {
-          toast.error(error?.message || "Password reset failed.");
-        }
       }
     );
   };

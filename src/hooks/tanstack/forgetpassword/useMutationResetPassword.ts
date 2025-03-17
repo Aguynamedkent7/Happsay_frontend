@@ -9,9 +9,15 @@ export const useMutationResetForgottenPassword = () => {
     return useMutation({
       mutationFn: async (data: IResetPass) => useResetPassword(data),
       onSuccess: () => {
-        toast.success("Password reset successful")
-      }, onError: () => {
-        toast.error("Password reset failed.")
+        toast.success("Password reset successful! Redirecting to login page...");
+      }, 
+      onError: (error: any) => {
+        if (error.response.status === 400) {
+          toast.error("Invalid reset password token!");
+        }
+        else {
+          toast.error("Unexpected error occurred.");
+        }
       }
     });
   }
