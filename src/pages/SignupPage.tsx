@@ -105,7 +105,7 @@ const handleSignup = (e: React.FormEvent) => {
     onSuccess: (response) => {
       const msg_key = Object.keys(response.data)[0];
       toast.success(response.data[msg_key]);
-      setTimeout(() => navigate("/login"), 4000);
+      setTimeout(() => navigate("/login"), 2000);
     },
     onError: (error: any) => {
       Object.entries(error.response.data).forEach(([key, message]) => {
