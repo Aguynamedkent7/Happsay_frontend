@@ -22,7 +22,6 @@ export const updateNoteTitle = (data: IUpdateNote) => {
   }
 }
   
-  
 export const updateNoteContent = (data: IUpdateNote) => {
     try {
       const res = api.patch(`todolist/${data.id}/`, { content: data.newContent })
@@ -42,7 +41,6 @@ export const deleteNote = (id: number) => {
   }
 }
 
-  // TODO
   export const toggleComplete = (data: ToggleCompleteData) => {
     try {
       const res = api.patch(`todolist/${data.id}/`, { is_done: !data.is_done});
@@ -54,7 +52,7 @@ export const deleteNote = (id: number) => {
 
   export const toggleArchive = (data: ToggleArchiveData) => {
     try {
-        const res = api.patch(`todolist/${data.id}/`, {is_archive: !data.is_archived});
+        const res = api.patch(`todolist/${data.id}/`, {is_archived: !data.is_archived});
         return res;
     } catch (error) {
         console.error(error)

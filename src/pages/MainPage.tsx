@@ -1,7 +1,5 @@
 import { useState } from "react";
-import {  
-  Todo, NotesState
-} from "@/services/useMutation";
+import { INotesState, ITodoQuery} from "@/interfaces/interfaces";
 import { useFetchTodos } from "@/hooks/tanstack/query/useQuery";
 import { useLogout } from "@/services/useAuth";
 import "@/styles/MainPage.css";
@@ -19,11 +17,11 @@ export default function MainPage() {
   const [selectedTab, setSelectedTab] = useState("ToDo");
   const [noteTitle, setNoteTitle] = useState("");
   const [noteContent, setNoteContent] = useState("");
-  const [selectedNote, setSelectedNote] = useState<Todo | null>(null);
+  const [selectedNote, setSelectedNote] = useState<ITodoQuery | null>(null);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [noteDeadline, setNoteDeadline] = useState("");
-  const [noteToDelete, setNoteToDelete] = useState<Todo | null>(null);
-  const [noteToArchive, setNoteToArchive] = useState<Todo | null>(null);
+  const [noteToDelete, setNoteToDelete] = useState<ITodoQuery | null>(null);
+  const [noteToArchive, setNoteToArchive] = useState<ITodoQuery | null>(null);
   const navigate = useNavigate();
 
   const { data: notes } = useFetchTodos();
@@ -84,7 +82,7 @@ export default function MainPage() {
     deleteNote(id);
   };
   
-  const confirmDeleteNote = (note: Todo) => {
+  const confirmDeleteNote = (note: ITodoQuery) => {
     setNoteToDelete(note);
   };
   
@@ -98,18 +96,11 @@ export default function MainPage() {
   
   // ✅ Toggle Completion
   const handleToggleComplete = (id: number, is_done: boolean) => {
-    toggleComplete({ id, is_done });
-
-    /*if (!is_done){
-      setSuccessMessage("Task Marked as Done")
-      setTimeout(() => setSuccessMessage(""), 3000);
-    }*/ //for future reference
-    
+    toggleComplete({ id, is_done });    
   
     // Close the popup if the toggled note was open
     if (selectedNote?.id === id) {
       setSelectedNote(null);
-      
     }
   };
   
@@ -120,7 +111,7 @@ export default function MainPage() {
     
   };
   
-  const confirmArchiveNote = (note: Todo) => {
+  const confirmArchiveNote = (note: ITodoQuery) => {
     setNoteToArchive(note);
   };
   
@@ -188,7 +179,7 @@ export default function MainPage() {
 
       {/* Notes List */}
 <div className="notes-container">
-  {!notes || notes[selectedTab as keyof NotesState]?.length === 0 ? (
+  {!notes || notes[selectedTab as keyof INotesState]?.length === 0 ? (
     <p className="empty-message">
       {selectedTab === "Done"
         ? "No completed tasks yet. Keep going!"
@@ -197,7 +188,7 @@ export default function MainPage() {
         : "It's quiet around here... Start planning your life now!"}
     </p>
   ) : (
-    notes[selectedTab as keyof NotesState]
+    notes[selectedTab as keyof INotesState]
       ?.slice() // Prevent modifying the original array
       .sort((a, b) => a.id - b.id) // Sort notes by ID to keep a consistent order
       .map((note) => (
