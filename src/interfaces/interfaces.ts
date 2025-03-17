@@ -1,7 +1,7 @@
 export interface IUserData {
     username: string;
-    email: string;
-    password?: string;
+    email?: string;
+    password: string;
     confirmPassword?: string;
   }
 

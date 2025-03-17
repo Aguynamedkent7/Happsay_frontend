@@ -1,5 +1,6 @@
 import { IAddNote, IUpdateNote } from "@/interfaces/interfaces";
 import api from "@/middleware/api";
+
 type ToggleCompleteData = Pick<IUpdateNote, "id" | "is_done">
 type ToggleArchiveData = Pick<IUpdateNote, "id" | "is_archived">
 
