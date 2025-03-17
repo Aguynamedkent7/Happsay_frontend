@@ -2,9 +2,10 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "@/styles/ResetPass.css";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { useResetPassword } from "@/services/useMutation"; 
-import { Bounce, ToastContainer, toast } from "react-toastify";
+import { useMutationResetForgottenPassword } from "@/hooks/tanstack/forgetpassword/useMutationResetPassword";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import styles
+import Toast from "@/components/ui/ToastContainer";
 
 const ResetPass = () => {
   const { token } = useParams();
@@ -15,21 +16,20 @@ const ResetPass = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Use the TanStack Query mutation
-  const { mutate: resetPassword } = useResetPassword();
+  const { useMutationResetPassword } = useMutationResetForgottenPassword();
+  const { mutate: resetPassword } = useMutationResetPassword();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
-      toast.error("Passwords do not match!", { position: "top-center", autoClose: 2000, hideProgressBar: true, closeOnClick: true, pauseOnHover: true, draggable: false, progress: undefined, theme: "light", closeButton: false, transition: Bounce }
-      );
+      toast.error("Passwords do not match!");
       return;
     }
 
 
     if (!token) {
-      toast.error("Invalid reset password token!", { position: "top-center", autoClose: 2000, hideProgressBar: true, closeOnClick: true, pauseOnHover: true, draggable: false, progress: undefined, theme: "light", closeButton: false, transition: Bounce }
-      );
+      toast.error("Invalid reset password token!");
       return;
     }
 
@@ -37,13 +37,11 @@ const ResetPass = () => {
       { token, password: newPassword, confirm_password: confirmPassword },
       {
         onSuccess: () => {
-          toast.success("Password reset successful! Redirecting to login page...",  { position: "top-center", autoClose: 2000, hideProgressBar: true, closeOnClick: true, pauseOnHover: true, draggable: false, progress: undefined, theme: "light", closeButton: false, transition: Bounce }
-          );
+          toast.success("Password reset successful! Redirecting to login page...");
           setTimeout(() => navigate("/login"), 1000);
         },
         onError: (error: any) => {
-          toast.error(error?.message || "Password reset failed." ,{ position: "top-center", autoClose: 2000, hideProgressBar: true, closeOnClick: true, pauseOnHover: true, draggable: false, progress: undefined, theme: "light", closeButton: false, transition: Bounce }
-          );
+          toast.error(error?.message || "Password reset failed.");
         }
       }
     );
@@ -90,7 +88,7 @@ const ResetPass = () => {
           </button>
 
         </form>
-        <ToastContainer />
+        <Toast/>
       </div>
     </div>
   );

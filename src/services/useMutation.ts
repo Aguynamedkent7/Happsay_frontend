@@ -1,16 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../middleware/api";
-import { IResetPass, IUserData } from "@/interfaces/interfaces";
-
-  
-  export const useResetPassword = () => {
-    return useMutation({
-      mutationFn: async (data: IResetPass) => {
-        const response = await api.post(`/reset-password/${data.token}/`, data);
-        return response.data;
-      },
-    });
-  };
+import { IUserData } from "@/interfaces/interfaces";
   
 
   export const useUpdateUserProfile = () => {

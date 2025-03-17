@@ -59,15 +59,3 @@ export const useLogout = async (navigate: ReturnType<typeof useNavigate>) => {
       return { ...mutation, isPending, error };
     };
 
-    export const usePasswordReset = () => {
-        return useMutation({
-          mutationFn: async (email: string) => {
-            try {
-              const response = await api.post(`password-reset/`, { email: email.trim() });
-              return response.data; // Returns success message
-            } catch (error: any) {
-              throw new Error(error.response?.data?.message || "No user is associated with this email address.");
-            }
-          },
-        });
-      };

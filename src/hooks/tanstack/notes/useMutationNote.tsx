@@ -1,5 +1,5 @@
 import { IAddNote, IUpdateNote } from "@/interfaces/interfaces"
-import { addNote, deleteNote, toggleArchive, toggleComplete, updateNoteContent, updateNoteTitle } from "@/services/note/useMutationNote"
+import { addNote, deleteNote, toggleArchive, toggleComplete, updateNoteContent, updateNoteTitle } from "@/services/note/notesApi"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { toast } from "react-toastify"

@@ -1,31 +1,27 @@
 import { useState } from "react";
 import "@/styles/ForgotPass.css";
 import { Link } from "react-router-dom";
-import { usePasswordReset } from "@/services/useAuth"; // Import API function
-import { useNavigate } from "react-router-dom";
-import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import styles
+import { useMutationForgetPassword } from "@/hooks/tanstack/forgetpassword/useMutationForgetPassword";
+import Toast from "@/components/ui/ToastContainer";
+import { useNavigate } from "react-router-dom";
 
 const ForgotPass = () => {
   const [email, setEmail] = useState("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const { mutate, isSuccess, isPending } = usePasswordReset()
+  const { useMutationForgetPasswordReset } = useMutationForgetPassword();
+  const { mutate: ForgotPass, isSuccess, isPending } = useMutationForgetPasswordReset();
   
   const handleForgotPass = async (email: string) => {
-    mutate(email, {
+    ForgotPass(email, { 
       onSuccess: () => {
-        toast.success("Password reset link sent!", { position: "top-center", autoClose: 2000, hideProgressBar: true, closeOnClick: true, pauseOnHover: true, draggable: false, progress: undefined, theme: "light", closeButton: false, transition: Bounce }
-        );
-        setTimeout(() => navigate("/"), 1500);
-        
-      },
-      onError: (error) => {
-        toast.error(` ${error.message || "Something went wrong"}`, { position: "top-center", autoClose: 2000, hideProgressBar: true, closeOnClick: true, pauseOnHover: true, draggable: false, progress: undefined, theme: "light", closeButton: false, transition: Bounce }
-        );
-      },
+        console.log("Password Reset Link sent!")
+        setTimeout(() => navigate('/'), 3000)
+      }
     });
   };
+
   return (
     <div className="forget-password-container">
       <div className="logo"></div>
@@ -56,7 +52,7 @@ const ForgotPass = () => {
             Back to Login
           </Link>
         </form>
-        <ToastContainer/>
+        <Toast/>
       </div>
     </div>
   );
