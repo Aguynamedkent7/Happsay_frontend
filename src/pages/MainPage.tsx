@@ -1,9 +1,5 @@
 import { useState } from "react";
-import { 
-  useAddNote, 
-  useUpdateNoteTitle, 
-  useUpdateNoteContent, 
-  useDeleteNote, 
+import {  
   useToggleComplete, 
   useToggleArchive,
   Todo, NotesState
@@ -14,6 +10,9 @@ import "@/styles/MainPage.css";
 import "@/styles/NotePopup.css";
 import "@/styles/ProfilePopup.css";
 import { Link, useNavigate } from "react-router-dom";
+import useMutationNote from "@/hooks/tanstack/notes/useMutationNote";
+import Toast from "@/components/ui/ToastContainer";
+import { toast } from "react-toastify";
 
 
 const tabs = ["ToDo", "Done", "Archive"];
@@ -35,9 +34,21 @@ export default function MainPage() {
 
 
   // ✅ Mutations for notes
-  const addNoteMutation = useAddNote();
-  const updateTitleMutation = useUpdateNoteTitle();
-  const updateContentMutation = useUpdateNoteContent();
+  // const addNoteMutation = useAddNote();
+  const {useMutationUpdateNoteTitle} = useMutationNote()
+  const {mutate: updateNoteTitle} = useMutationUpdateNoteTitle()
+
+  const {useMutationUpdateNoteContent} = useMutationNote();
+  const {mutate: updateNoteContent} = useMutationUpdateNoteContent();
+
+  const {useMutationAddNote} = useMutationNote()
+  const {mutate: addNote, isPending} = useMutationAddNote()
+
+  const {useMutationDeleteNote} = useMutationNote();
+  const {mutate: deleteNote} = useMutationDeleteNote();
+  
+  const toggleCompleteMutation = useToggleComplete();
+  const toggleArchiveMutation = useToggleArchive();
 
   const handleAddNote = async () => {
     if (selectedTab !== "ToDo") return;
@@ -48,7 +59,7 @@ export default function MainPage() {
       return;
     }
 
-    addNoteMutation.mutate({ title: noteTitle, content: noteContent, deadline: noteDeadline });
+    addNote({ title: noteTitle, content: noteContent, deadline: noteDeadline });
 
     // Reset input fields
     setNoteTitle("");
@@ -60,22 +71,19 @@ export default function MainPage() {
     if (!selectedNote) return;
 
     try {
-      updateTitleMutation.mutate({ id: selectedNote.id, newTitle: selectedNote.title });
-      updateContentMutation.mutate({ id: selectedNote.id, newContent: selectedNote.content });
-
+      updateNoteTitle({ id: selectedNote.id, newTitle: selectedNote.title });
+      updateNoteContent({ id: selectedNote.id, newContent: selectedNote.content });
+      toast.success("Changes saved")
       setSelectedNote(null); // Close the popup
     } catch (error) {
       console.error("Error saving changes:", error);
     }
   };
 
-  const deleteNoteMutation = useDeleteNote();
-  const toggleCompleteMutation = useToggleComplete();
-  const toggleArchiveMutation = useToggleArchive();
   
   // ✅ Delete Note
   const handleDeleteNote = async (id: number) => {
-    deleteNoteMutation.mutate(id);
+    deleteNote(id);
   };
   
   const confirmDeleteNote = (note: Todo) => {
@@ -245,7 +253,9 @@ export default function MainPage() {
             }}
             className="note-title"
           />
-          <button className="close-btn" onClick={handleSaveChanges}>✖</button>
+          <button className="close-btn" onClick={() => {
+            return setSelectedNote(null);
+          }}>✖</button>
         </div>
 
         <textarea
@@ -292,7 +302,7 @@ export default function MainPage() {
     </div>
   </div>
   )}
-
+<Toast/>
 </div>
 
 

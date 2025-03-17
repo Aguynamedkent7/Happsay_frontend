@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../middleware/api";
-import { IResetPass, IUserData } from "@/interfaces/interfaces";
+import { IAddNote, IResetPass, IUpdateNote, IUserData } from "@/interfaces/interfaces";
 
 
 
@@ -8,61 +8,45 @@ import { IResetPass, IUserData } from "@/interfaces/interfaces";
 export type Todo = { id: number; title: string; content: string; is_done: boolean; is_archived: boolean; deadline: string };
 export type NotesState = { ToDo: Todo[]; Done: Todo[]; Archive: Todo[] };
 
-// ✅ Add Note Mutation
-export const useAddNote = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-      mutationFn: async ({ title, content, deadline }: { title: string; content: string; deadline: string }) => {
-        const response = await api.post<Todo>("todolist/", { title, content, completed: false, deadline });
-        return response.data;
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["todos"] }); // Refetch notes after adding
-      },
-    });
-  };
 
-  
-// ✅ Update Note Title Mutation
-export const useUpdateNoteTitle = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-      mutationFn: async ({ id, newTitle }: { id: number; newTitle: string }) => {
-        return api.patch(`todolist/${id}/`, { title: newTitle });
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["todos"] });
-      },
-    });
-  };
-  
-  
-// ✅ Update Note Content Mutation
-export const useUpdateNoteContent = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-      mutationFn: async ({ id, newContent }: { id: number; newContent: string }) => {
-        return api.patch(`todolist/${id}/`, { content: newContent });
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["todos"] });
-      },
-    });
-  };
+export const addNote = (data:IAddNote) => {
+    try {
+      const res = api.post("todolist/", data)
+      return res
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+
+export const updateNoteTitle = (data: IUpdateNote) => {
+  try {
+    const res = api.patch(`todolist/${data.id}/`, { title: data.newTitle });
+    return res;
+  } catch (error) {
+    console.error(error);
+  }
+}
   
   
-// ✅ Delete Note Mutation
-export const useDeleteNote = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-      mutationFn: async (id: number) => {
-        await api.delete(`todolist/${id}/`);
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["todos"] });
-      },
-    });
-  };
+export const updateNoteContent = (data: IUpdateNote) => {
+    try {
+      const res = api.patch(`todolist/${data.id}/`, { content: data.newContent })
+      return res
+    } catch (error) {
+      console.error(error); 
+    }
+  }
+  
+
+export const deleteNote = (id: number) => {
+  try {
+      const res = api.delete(`todolist/${id}/`)
+      return res;
+  } catch (error) {
+      console.error(error)
+  }
+}
   
   // ✅ Toggle Complete Mutation
 export const useToggleComplete = () => {
@@ -76,8 +60,18 @@ export const useToggleComplete = () => {
       },
     });
   };
+
+  // TODO
+  export const toggleComplete = (data: IUpdateNote) => {
+    try {
+      const res = api.patch(`todolist/${data.id}/`, { is_done: !data.is_done});
+      return res;
+    } catch (error) {
+      console.error(error)
+    }
+  }
   
-  // ✅ Toggle Archive Mutation
+  // ✅ Toggle Archive Mutation TODO
   export const useToggleArchive = () => {
     const queryClient = useQueryClient();
     return useMutation({

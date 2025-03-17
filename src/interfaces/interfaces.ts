@@ -11,3 +11,16 @@ export interface IResetPass {
     confirm_password: string;
   }
 
+export interface IAddNote {
+    title: string;
+    content: string;
+    deadline: string;
+  }
+
+export interface IUpdateNote {
+    id: number;
+    newTitle?: string;
+    newContent?: string;
+    is_done?: boolean;
+    is_archived?: boolean;
+}
