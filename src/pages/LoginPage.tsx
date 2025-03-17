@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import "@/styles/LoginPage.css";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
-import { useLogin } from "@/services/useAuth";
-import { toast } from "react-toastify";
 import Toast from "@/components/ui/ToastContainer";
 import "react-toastify/dist/ReactToastify.css"; // Import styles
+import useMutationAuth from "@/hooks/tanstack/auth/useMutationAuth";
+import { IUserData } from "@/interfaces/interfaces";
 
 const InputField: React.FC<{ 
   type: string; 
@@ -46,25 +46,11 @@ const LoginPage: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const { mutate, isPending } = useLogin();
+  const {useMutationLogin} = useMutationAuth();
+  const {mutate: loginUser, isPending} = useMutationLogin();
 
-  const handleLogin = ({ username, password }: { username: string; password: string }) => {
-    mutate(
-      { username, password },
-      {
-        onSuccess: () => {
-          toast.success("Login successful! 🎉");
-        },
-        onError: (error: any) => {
-          if (error.response.status === 400) {
-            toast.error("Invalid username or password!");
-          }
-          else {
-            toast.error("An unexpected error occurred. Please try again");
-          }
-        },
-      }
-    );
+  const handleLogin = (data: IUserData) => {
+    loginUser(data);
   };
 
   return (
