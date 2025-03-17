@@ -1,19 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
-import api from "../middleware/api";
+import api from "../../../middleware/api";
+import { INotesState, ITodoQuery } from "@/interfaces/interfaces";
 
-
-
-
-export type Todo = { id: number; title: string; content: string; is_done: boolean; is_archived: boolean; deadline: string };
-export type NotesState = { ToDo: Todo[]; Done: Todo[]; Archive: Todo[] };
 
 
 // ✅ Fetch Todos with TanStack Query
 export const useFetchTodos = () => {
-    return useQuery<NotesState>({
+    return useQuery<INotesState>({
       queryKey: ["todos"],
       queryFn: async () => {
-        const response = await api.get<Todo[]>("todolist/");
+        const response = await api.get<ITodoQuery[]>("todolist/");
         const data = response.data;
         return {
           ToDo: data.filter((note) => !note.is_done && !note.is_archived),

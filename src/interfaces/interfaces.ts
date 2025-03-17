@@ -18,9 +18,24 @@ export interface IAddNote {
   }
 
 export interface IUpdateNote {
-    id: number;
+    id: number; 
     newTitle?: string;
     newContent?: string;
     is_done?: boolean;
     is_archived?: boolean;
+}
+
+export interface ITodoQuery { 
+  id: number; 
+  title: string; 
+  content: string; 
+  is_done: boolean; 
+  is_archived: boolean; 
+  deadline: string 
+}
+
+export interface INotesState {
+  ToDo: ITodoQuery[]; 
+  Done: ITodoQuery[]; 
+  Archive: ITodoQuery[];
 }

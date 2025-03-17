@@ -1,6 +1,6 @@
 import { IAddNote, IUpdateNote } from "@/interfaces/interfaces"
-import { addNote, deleteNote, toggleComplete, updateNoteContent, updateNoteTitle } from "@/services/useMutation"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { addNote, deleteNote, toggleArchive, toggleComplete, updateNoteContent, updateNoteTitle } from "@/services/note/useMutationNote"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { toast } from "react-toastify"
 
@@ -64,22 +64,44 @@ const useMutationNote = () => {
         const queryClient = useQueryClient();
         return useMutation({
             mutationFn: async (data: IUpdateNote) => toggleComplete(data),
-            onSuccess: () => {
-                toast.success("Task marked as done!")
+            onSuccess: (_, variables) => {
+                if (variables.is_done){
+                    toast.success("Task unmarked as done")
+                } else{
+                    toast.success("Task marked as done")
+                }
+                queryClient.invalidateQueries({ queryKey: ["todos"] });
             },
             onError: () => {
                 toast.error("Failed to mark as done. Try again.")
-                queryClient.invalidateQueries({ queryKey: ["todos"] });
             }
         });
     }
 
+    const useMutationToggleArchive = () => {
+        const queryClient = useQueryClient();
+        return useMutation({
+            mutationFn: async (data: IUpdateNote) => toggleArchive(data),
+            onSuccess: (_, variables) => {
+                if (variables.is_archived){
+                    toast.success("Task unarchived")
+                } else{
+                    toast.success("Task archived successfully")
+                }
+                queryClient.invalidateQueries({ queryKey: ["todos"]});
+            },
+            onError: () => {
+                toast.error("Failed to Archive.")
+            }
+        })
+    }
     return {
         useMutationAddNote, 
         useMutationUpdateNoteTitle, 
         useMutationUpdateNoteContent,
         useMutationDeleteNote,
-        useMutationToggleComplete
+        useMutationToggleComplete,
+        useMutationToggleArchive
     }
 
 

@@ -1,10 +1,8 @@
 import { useState } from "react";
 import {  
-  useToggleComplete, 
-  useToggleArchive,
   Todo, NotesState
 } from "@/services/useMutation";
-import { useFetchTodos } from "@/services/useQuery";
+import { useFetchTodos } from "@/hooks/tanstack/query/useQuery";
 import { useLogout } from "@/services/useAuth";
 import "@/styles/MainPage.css";
 import "@/styles/NotePopup.css";
@@ -26,8 +24,6 @@ export default function MainPage() {
   const [noteDeadline, setNoteDeadline] = useState("");
   const [noteToDelete, setNoteToDelete] = useState<Todo | null>(null);
   const [noteToArchive, setNoteToArchive] = useState<Todo | null>(null);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
   const { data: notes } = useFetchTodos();
@@ -42,20 +38,22 @@ export default function MainPage() {
   const {mutate: updateNoteContent} = useMutationUpdateNoteContent();
 
   const {useMutationAddNote} = useMutationNote()
-  const {mutate: addNote, isPending} = useMutationAddNote()
+  const {mutate: addNote} = useMutationAddNote()
 
   const {useMutationDeleteNote} = useMutationNote();
   const {mutate: deleteNote} = useMutationDeleteNote();
   
-  const toggleCompleteMutation = useToggleComplete();
-  const toggleArchiveMutation = useToggleArchive();
+  const {useMutationToggleComplete} = useMutationNote();
+  const {mutate: toggleComplete} = useMutationToggleComplete();
+
+  const { useMutationToggleArchive } = useMutationNote();
+  const { mutate: toggleArchive } = useMutationToggleArchive();
 
   const handleAddNote = async () => {
     if (selectedTab !== "ToDo") return;
 
     if (!noteTitle.trim() || !noteContent.trim() || !noteDeadline) {
-      setErrorMessage("Please fill in all input fields");
-      setTimeout(() => setErrorMessage(""), 3000);
+      toast.error("Please fill in all input fields");
       return;
     }
 
@@ -100,11 +98,12 @@ export default function MainPage() {
   
   // ✅ Toggle Completion
   const handleToggleComplete = (id: number, is_done: boolean) => {
-    toggleCompleteMutation.mutate({ id, is_done });
-    if (!is_done){
+    toggleComplete({ id, is_done });
+
+    /*if (!is_done){
       setSuccessMessage("Task Marked as Done")
       setTimeout(() => setSuccessMessage(""), 3000);
-    }
+    }*/ //for future reference
     
   
     // Close the popup if the toggled note was open
@@ -116,7 +115,7 @@ export default function MainPage() {
   
   // ✅ Toggle Archive
   const handleToggleArchive = async (id: number, is_archived: boolean) => {
-    toggleArchiveMutation.mutate({ id, is_archived });
+    toggleArchive({ id, is_archived });
     setSelectedNote(null);
     
   };
@@ -143,16 +142,6 @@ export default function MainPage() {
       {localStorage.getItem("username")}
     </button>
   </header>
-   {errorMessage && (
-  <div className="error-popup">
-    <p>{errorMessage}</p>
-  </div>
-)}  
-    {successMessage && (
-  <div className="error-popup">
-    <p>{successMessage}</p>
-  </div>
-)}
   
 
   {/* Profile Popup */}
