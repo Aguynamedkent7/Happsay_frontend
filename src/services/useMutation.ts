@@ -16,21 +16,3 @@ import { IUserData } from "@/interfaces/interfaces";
       },
     });
   };
-
-  export const useSignup = () => {
-  
-    return useMutation({
-      mutationFn: async ({ username, email, password, confirmPassword }: IUserData) => {
-        const response = await api.post(`register/`, {
-          username,
-          email,
-          password,
-          confirm_password: confirmPassword,
-        });
-        return response;
-        
-      },
-    });
-  };
-  
-  

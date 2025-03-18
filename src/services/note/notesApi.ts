@@ -1,9 +1,18 @@
-import { IAddNote, IUpdateNote } from "@/interfaces/interfaces";
+import { IAddNote, ITodoQuery, IUpdateNote } from "@/interfaces/interfaces";
 import api from "@/middleware/api";
 
 type ToggleCompleteData = Pick<IUpdateNote, "id" | "is_done">
 type ToggleArchiveData = Pick<IUpdateNote, "id" | "is_archived">
 
+export const queryNotes = async () => {
+    const response = await api.get<ITodoQuery[]>("todolist/");
+    const data = response.data;
+    return {
+      ToDo: data.filter((note) => !note.is_done && !note.is_archived),
+      Done: data.filter((note) => note.is_done && !note.is_archived),
+      Archive: data.filter((note) => note.is_archived),
+    };
+}
 
 export const addNote = (data:IAddNote) => {
     try {

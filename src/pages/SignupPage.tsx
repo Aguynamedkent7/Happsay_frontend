@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "@/styles/SignupPage.css";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
-import { useSignup } from "@/services/useMutation"; 
+import { useMutationSignup } from "@/hooks/tanstack/signup/useMutationSignup";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; 
 import Toast from "@/components/ui/ToastContainer";
@@ -46,13 +46,14 @@ const Button: React.FC<{ text: string; type?: "button" | "submit" | "reset" }> =
 
 const SignupPage: React.FC = () => {
   const navigate = useNavigate();
-  const { mutate: signup } = useSignup();
+  
+  const { mutate: signup } = useMutationSignup();
 
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
-    confirmPassword: "",
+    confirm_password: "",
   });
 
 
@@ -67,7 +68,7 @@ const SignupPage: React.FC = () => {
   username: "Username",
   password: "Password",
   email: "Email",
-  confirmPassword: "Confirm Password", 
+  confirm_password: "Confirm Password", 
 };
 
 const handleSignup = (e: React.FormEvent) => {
@@ -90,8 +91,8 @@ const handleSignup = (e: React.FormEvent) => {
   }
 
   // 🔹 Check if passwords match
-  if (formData.password !== formData.confirmPassword) {
-    errors.push(`${errorMessagesMap.confirmPassword}: Passwords do not match.`);
+  if (formData.password !== formData.confirm_password) {
+    errors.push(`Passwords do not match.`);
   }
 
   // ❌ Show all errors and stop form submission
@@ -104,14 +105,14 @@ const handleSignup = (e: React.FormEvent) => {
   signup(formData, {
     onSuccess: (response) => {
       const msg_key = Object.keys(response.data)[0];
-      toast.success(response.data[msg_key]);
+      console.log(response.data[msg_key]);
       setTimeout(() => navigate("/login"), 2000);
     },
     onError: (error: any) => {
       Object.entries(error.response.data).forEach(([key, message]) => {
         const friendlyKey = errorMessagesMap[key] || key;
         const errorMessage = Array.isArray(message) ? message.join(", ") : message;
-        toast.error(`${friendlyKey}: ${errorMessage}`);
+        console.log(`${friendlyKey}: ${errorMessage}`);
       });
     },
   });
@@ -127,7 +128,7 @@ const handleSignup = (e: React.FormEvent) => {
           <InputField type="text" name="email" placeholder="Email" value={formData.email} onChange={handleChange} />
           <InputField type="text" name="username" placeholder="Username" value={formData.username} onChange={handleChange} />
           <InputField type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} showPasswordToggle />
-          <InputField type="password" name="confirmPassword" placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} showPasswordToggle />
+          <InputField type="password" name="confirm_password" placeholder="Confirm Password" value={formData.confirm_password} onChange={handleChange} showPasswordToggle />
           <Link to="/login" className="tet">Already have an account?</Link>
           <Button text="Sign Up" type="submit" />
         </form>

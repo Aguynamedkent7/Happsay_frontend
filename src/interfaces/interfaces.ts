@@ -2,7 +2,7 @@ export interface IUserData {
     username: string;
     email?: string;
     password: string;
-    confirmPassword?: string;
+    confirm_password?: string;
   }
 
 export interface IResetPass {
