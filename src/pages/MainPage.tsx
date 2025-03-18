@@ -124,13 +124,27 @@ export default function MainPage() {
     setNoteToArchive(null); // Close the archive confirmation popup
   };
 
+
   const handleDeadlineChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedDate = e.target.value;
+    const today = new Date().toISOString().split("T")[0];
+  
+    if (selectedDate < today) {
+      toast.error("Can't set a past date as a deadline");
+      return; // Prevents updating the state
+    }
+  
+    setNoteDeadline(selectedDate);
+  };
+
+  
+  const handlePopupNoteDeadlineChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedDate = e.target.value;
     const today = new Date().toISOString().split("T")[0];
 
     if (selectedDate < today) {
       toast.error("Can't set a past date as deadline");
-      setNoteDeadline(today);
+      setSelectedNote((prev) => (prev ? { ...prev, deadline: today } : prev));
        // Reset to today's date or keep the last valid date
     } else if (selectedNote) {
       setSelectedNote((prev) => (prev ? { ...prev, deadline: selectedDate } : prev));
@@ -258,7 +272,7 @@ export default function MainPage() {
               <input
                 type="date"
                 value={selectedNote.deadline || ""}
-                onChange={handleDeadlineChange}
+                onChange={handlePopupNoteDeadlineChange}
                 min={new Date().toISOString().split("T")[0]}
                 className="note-deadlinepopup"
               />
