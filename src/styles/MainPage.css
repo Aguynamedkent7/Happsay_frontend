@@ -212,6 +212,7 @@ nav {
   width: 100%;
   max-width: 80%;
   justify-content: center;
+  
 }
 
 .note-card {
@@ -256,6 +257,8 @@ nav {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100px;
+  display: inline-block;
 }
 
 .note-card .note-preview {

@@ -9,6 +9,7 @@ import useMutationNote from "@/hooks/tanstack/notes/useMutationNote";
 import Toast from "@/components/ui/ToastContainer";
 import { toast } from "react-toastify";
 import { useLogout } from "@/services/auth/authApi";
+import { useGetUser } from "@/hooks/tanstack/getuser/useQueryGetUser";
 
 const tabs = ["ToDo", "Done", "Archive"];
 
@@ -23,7 +24,9 @@ export default function MainPage() {
   const [noteToArchive, setNoteToArchive] = useState<ITodoQuery | null>(null);
   const navigate = useNavigate();
 
+  const userId = Number(localStorage.getItem("userId"));
   const { data: notes } = useFetchTodos();
+  const { data: user } = useGetUser(userId);
 
   // ✅ Mutations for notes
   const { useMutationUpdateNoteTitle } = useMutationNote();
@@ -122,7 +125,7 @@ export default function MainPage() {
       <header className="header">
         <h1>Happsay!</h1>
         <button className="profile-pic" onClick={() => setIsProfileOpen((prev) => !prev)}>
-          {localStorage.getItem("username")}
+          { user?.username }
         </button>
       </header>
 

@@ -19,6 +19,7 @@ const useMutationAuth = () => {
             onSuccess: (res) => {
                 if (res?.status === 200) {
                     const data = res?.data;
+                    localStorage.setItem("userId", data.user.id)
                     localStorage.setItem("username", data.user.username);
                     localStorage.setItem("access_token", data.access);
                     localStorage.setItem("refresh_token", data.refresh);

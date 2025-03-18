@@ -2,16 +2,19 @@ import "@/styles/Settings.css";
 import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useUpdateUserProfile } from "@/services/useMutation";
-import { useQuery } from "@tanstack/react-query";
-import api from "@/middleware/api";
+import { useUpdateUserProfile } from "@/hooks/tanstack/updateprofile/useMutationUpdateUserProfile";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Toast from "@/components/ui/ToastContainer";
+import { useGetUser } from "@/hooks/tanstack/getuser/useQueryGetUser";
+import { IUserData } from "@/interfaces/interfaces";
 
 const SettingsPage: React.FC = () => {
+  const userId = Number(localStorage.getItem("userId"));
+  const { data: user, isFetching } = useGetUser(userId);
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<IUserData>({
+    user_id: user?.user_id,
     username: "",
     email: "",
     password: "",
@@ -20,22 +23,12 @@ const SettingsPage: React.FC = () => {
   const [showPassword1, setShowPassword1] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
 
-  const storedUserId = localStorage.getItem("userId");
-  const userId = storedUserId ? parseInt(storedUserId, 10) : null;
 
-  // Fetch user data
-  const { data: user, isLoading: isFetching } = useQuery({
-    queryKey: ["userProfile"],
-    queryFn: async () => {
-      const res = await api.get(`/users/${userId}/`);
-      return res.data;
-    },
-    enabled: !!userId, // Only fetch if userId exists
-  });
 
   useEffect(() => {
     if (user) {
       setFormData({
+        user_id: userId,
         username: user.username || "",
         email: user.email || "",
         password: "",
@@ -67,15 +60,7 @@ const SettingsPage: React.FC = () => {
       return;
     }
 
-    updateUserProfile({ userId, updatedData: formData }, {
-      onSuccess: () => {
-        toast.success("Profile updated successfully!");
-      },
-      onError: (error: any) => {
-        const errorMessage = (error as any)?.message || "Update failed.";
-        toast.error(errorMessage);
-      },
-    });
+    updateUserProfile(formData);
   };
 
   return (
@@ -87,7 +72,7 @@ const SettingsPage: React.FC = () => {
       <div className="settings-container">
         <p className="change-password">Update Account</p>
         
-        {isFetching ? <p>Loading user data...</p> : null}
+        
 
         <form onSubmit={handleSaveChanges}>
           <div className="settings-section">
@@ -127,7 +112,7 @@ const SettingsPage: React.FC = () => {
             </div>
 
             <button className="confirm-button" type="submit">
-              Confirm
+            {isFetching ? <p>Loading user data...</p> : <p>Confirm</p>}
             </button>
           </div>
         </form>
