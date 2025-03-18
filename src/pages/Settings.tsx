@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useUpdateUserProfile } from "@/hooks/tanstack/updateprofile/useMutationUpdateUserProfile";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Toast from "@/components/ui/ToastContainer";
 import { useGetUser } from "@/hooks/tanstack/getuser/useQueryGetUser";

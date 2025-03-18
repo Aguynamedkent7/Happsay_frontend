@@ -3,7 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import "@/styles/ResetPass.css";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useMutationResetForgottenPassword } from "@/hooks/tanstack/forgetpassword/useMutationResetPassword";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import styles
 import Toast from "@/components/ui/ToastContainer";
 import showToast from "@/components/ui/showToast";
