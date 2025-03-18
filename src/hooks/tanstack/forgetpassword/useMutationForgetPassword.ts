@@ -1,3 +1,4 @@
+import showToast from "@/components/ui/showToast";
 import { useForgotPasswordReset } from "@/services/forgetpassword/forgetpasswordresetApi";
 import { useMutation} from "@tanstack/react-query"
 
@@ -12,7 +13,7 @@ export const useMutationForgetPassword = () => {
                 toast.success("Password reset link sent to your email!", {autoClose: 3000})
             }, 
             onError: () => {
-                toast.error("No user is associated with this email address.")
+                showToast("No user is associated with this email address.", "error")
                 console.error(Error)
             }
         })

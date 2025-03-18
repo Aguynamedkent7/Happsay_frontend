@@ -6,6 +6,7 @@ import { useMutationResetForgottenPassword } from "@/hooks/tanstack/forgetpasswo
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import styles
 import Toast from "@/components/ui/ToastContainer";
+import showToast from "@/components/ui/showToast";
 
 const ResetPass = () => {
   const { token } = useParams();
@@ -23,13 +24,13 @@ const ResetPass = () => {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
-      toast.error("Passwords do not match!");
+      showToast("Passwords do not match!", "pwnomatch");
       return;
     }
 
 
     if (!token) {
-      toast.error("Invalid reset password token!");
+      showToast("Invalid reset password token!", "error");
       return;
     }
 

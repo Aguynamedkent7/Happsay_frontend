@@ -1,3 +1,4 @@
+import showToast from "@/components/ui/showToast";
 import { IResetPass } from "@/interfaces/interfaces";
 import { useResetPassword } from "@/services/forgetpassword/resetpasswordApi";
 import { useMutation} from "@tanstack/react-query"
@@ -13,10 +14,10 @@ export const useMutationResetForgottenPassword = () => {
       }, 
       onError: (error: any) => {
         if (error.response.status === 400) {
-          toast.error("Invalid reset password token!");
+          showToast("Invalid reset password token!", "invalid_token");
         }
         else {
-          toast.error("Unexpected error occurred.");
+          showToast("Unexpected error occurred.", "error");
         }
       }
     });

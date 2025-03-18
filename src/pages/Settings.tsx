@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Toast from "@/components/ui/ToastContainer";
 import { useGetUser } from "@/hooks/tanstack/getuser/useQueryGetUser";
 import { IUserData } from "@/interfaces/interfaces";
+import showToast from "@/components/ui/showToast";
 
 const SettingsPage: React.FC = () => {
   const userId = Number(localStorage.getItem("userId"));
@@ -51,12 +52,12 @@ const SettingsPage: React.FC = () => {
     e.preventDefault();
 
     if (!userId) {
-      toast.error("User ID not found. Please log in again.");
+      showToast("User ID not found. Please log in again.", "error");
       return;
     }
 
     if (formData.password && formData.password !== formData.confirm_password) {
-      toast.error("Passwords do not match.");
+      showToast("Passwords do not match.", "error");
       return;
     }
 

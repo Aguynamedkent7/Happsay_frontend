@@ -10,6 +10,7 @@ import Toast from "@/components/ui/ToastContainer";
 import { toast } from "react-toastify";
 import { useLogout } from "@/services/auth/authApi";
 import { useGetUser } from "@/hooks/tanstack/getuser/useQueryGetUser";
+import showToast from "@/components/ui/showToast";
 
 const tabs = ["ToDo", "Done", "Archive"];
 
@@ -54,7 +55,7 @@ export default function MainPage() {
     if (selectedTab !== "ToDo") return;
 
     if (!noteTitle.trim() || !noteContent.trim() || !noteDeadline) {
-      toast.error("Please fill in all input fields");
+      showToast("Please fill in all input fields", "missing_fields");
       return;
     }
 
@@ -130,7 +131,7 @@ export default function MainPage() {
     const today = new Date().toISOString().split("T")[0];
   
     if (selectedDate < today) {
-      toast.error("Can't set a past date as a deadline");
+      showToast("Can't set a past date as a deadline", "error");
       return; // Prevents updating the state
     }
   
@@ -143,7 +144,7 @@ export default function MainPage() {
     const today = new Date().toISOString().split("T")[0];
 
     if (selectedDate < today) {
-      toast.error("Can't set a past date as deadline");
+      showToast("Can't set a past date as deadline", "error");
       setSelectedNote((prev) => (prev ? { ...prev, deadline: today } : prev));
        // Reset to today's date or keep the last valid date
     } else if (selectedNote) {

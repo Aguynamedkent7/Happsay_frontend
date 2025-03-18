@@ -1,3 +1,4 @@
+import showToast from "@/components/ui/showToast";
 import { IUserData } from "@/interfaces/interfaces";
 import { registerUser } from "@/services/signup/signupApi";
 import { useMutation } from "@tanstack/react-query";
@@ -10,7 +11,7 @@ export const useMutationSignup = () => {
             toast.success("Registered successfully!");
           },
           onError: () => {
-            toast.error("Failed to register");
+            showToast("Failed to register", "error");
           }
         });
 };

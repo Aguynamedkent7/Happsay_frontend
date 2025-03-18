@@ -1,3 +1,4 @@
+import showToast from "@/components/ui/showToast"
 import { IAddNote, IUpdateNote } from "@/interfaces/interfaces"
 import { addNote, deleteNote, toggleArchive, toggleComplete, updateNoteContent, updateNoteDeadline, updateNoteTitle } from "@/services/note/notesApi"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -15,7 +16,7 @@ const useMutationNote = () => {
                 queryClient.invalidateQueries({ queryKey: ["todos"] })
             },
             onError: () => {
-                toast.error("Failed to add note")
+                showToast("Failed to add note", "error")
             }
         })
     }
@@ -28,7 +29,7 @@ const useMutationNote = () => {
                 queryClient.invalidateQueries({ queryKey: ["todos"] })
             },
             onError: () => {
-                toast.error("Failed to update title")
+                showToast("Failed to update title", "error")
             }
         })
     }
@@ -41,7 +42,7 @@ const useMutationNote = () => {
                 queryClient.invalidateQueries({ queryKey: ["todos"] });
             },
             onError: () => {
-                toast.error("Failed to update note content")
+                showToast("Failed to update note content", "error")
             }
         });
     }
@@ -54,7 +55,7 @@ const useMutationNote = () => {
                 queryClient.invalidateQueries({ queryKey: ["todos"] });
             },
             onError: () => {
-                toast.error("Failed to update deadline");
+                showToast("Failed to update deadline", "error");
             }
         });
     }
@@ -68,7 +69,7 @@ const useMutationNote = () => {
                 queryClient.invalidateQueries({ queryKey: ["todos"] });
             },
             onError: () => {
-                toast.error("Failed to delete note")
+                showToast("Failed to delete note", "error")
             }
         });
     }
@@ -86,7 +87,7 @@ const useMutationNote = () => {
                 queryClient.invalidateQueries({ queryKey: ["todos"] });
             },
             onError: () => {
-                toast.error("Failed to mark as done. Try again.")
+                showToast("Failed to mark as done. Try again.", "error")
             }
         });
     }
@@ -104,7 +105,7 @@ const useMutationNote = () => {
                 queryClient.invalidateQueries({ queryKey: ["todos"]});
             },
             onError: () => {
-                toast.error("Failed to Archive.")
+                showToast("Failed to Archive.", "error")
             }
         })
     }

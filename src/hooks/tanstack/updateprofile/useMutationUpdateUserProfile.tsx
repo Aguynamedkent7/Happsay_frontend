@@ -1,3 +1,4 @@
+import showToast from "@/components/ui/showToast";
 import { IUserData } from "@/interfaces/interfaces";
 import { updateUserProfile } from "@/services/updateprofile/updateprofileApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -14,7 +15,7 @@ export const useUpdateUserProfile = () => {
         queryClient.invalidateQueries({ queryKey: ["userProfile"] }); // Refresh user data
       },
       onError: () => {
-        toast.error("Failed to update user information");
+        showToast("Failed to update user information", "error");
       }
     });
   };

@@ -1,3 +1,4 @@
+import showToast from "@/components/ui/showToast";
 import { IUserData } from "@/interfaces/interfaces"
 import { loginUser } from "@/services/auth/authApi";
 import { useMutation } from "@tanstack/react-query"
@@ -34,9 +35,9 @@ const useMutationAuth = () => {
             onError: (err: any) => {
                  const statusCode = err.response?.status;
                  if (statusCode === 400) {
-                     toast.error("Invalid username or password");
+                     showToast("Invalid username or password", "invalid_credentials");
                  } else {
-                     toast.error("An unexpected error occurred. Please try again.");
+                     showToast("An unexpected error occurred. Please try again.", "unexpected_err");
                      console.log(err);
                  }
               },

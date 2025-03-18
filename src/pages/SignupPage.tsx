@@ -6,6 +6,7 @@ import { useMutationSignup } from "@/hooks/tanstack/signup/useMutationSignup";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; 
 import Toast from "@/components/ui/ToastContainer";
+import showToast from "@/components/ui/showToast";
 
 const InputField: React.FC<{ 
   type: string; 
@@ -97,7 +98,7 @@ const handleSignup = (e: React.FormEvent) => {
 
   // ❌ Show all errors and stop form submission
   if (errors.length > 0) {
-    errors.forEach((error) => toast.error(error)); // Now all errors show
+    errors.forEach((error) => showToast(error, "error")); // Now all errors show
     return;
   }
 
