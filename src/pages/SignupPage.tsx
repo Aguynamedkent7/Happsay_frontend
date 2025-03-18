@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "@/styles/SignupPage.css";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
-import { useMutationSignup } from "@/hooks/tanstack/signup/useMutationSignup";
+import useMutationAuth from "@/hooks/tanstack/auth/useMutationAuth";
 import "react-toastify/dist/ReactToastify.css"; 
 import Toast from "@/components/ui/ToastContainer";
 import showToast from "@/components/ui/showToast";
@@ -47,6 +47,7 @@ const Button: React.FC<{ text: string; type?: "button" | "submit" | "reset" }> =
 const SignupPage: React.FC = () => {
   const navigate = useNavigate();
   
+  const {useMutationSignup} = useMutationAuth();
   const { mutate: signup } = useMutationSignup();
 
   const [formData, setFormData] = useState({

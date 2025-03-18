@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "@/styles/ResetPass.css";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { useMutationResetForgottenPassword } from "@/hooks/tanstack/forgetpassword/useMutationResetPassword";
+import useMutationAuth from "@/hooks/tanstack/auth/useMutationAuth";
 import "react-toastify/dist/ReactToastify.css"; // Import styles
 import Toast from "@/components/ui/ToastContainer";
 import showToast from "@/components/ui/showToast";
@@ -16,7 +16,7 @@ const ResetPass = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Use the TanStack Query mutation
-  const { useMutationResetPassword } = useMutationResetForgottenPassword();
+  const { useMutationResetPassword } = useMutationAuth();
   const { mutate: resetPassword } = useMutationResetPassword();
 
   const handleSubmit = (e: React.FormEvent) => {

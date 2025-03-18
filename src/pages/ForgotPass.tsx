@@ -2,7 +2,7 @@ import { useState } from "react";
 import "@/styles/ForgotPass.css";
 import { Link } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css"; // Import styles
-import { useMutationForgetPassword } from "@/hooks/tanstack/forgetpassword/useMutationForgetPassword";
+import useMutationAuth from "@/hooks/tanstack/auth/useMutationAuth";
 import Toast from "@/components/ui/ToastContainer";
 import { useNavigate } from "react-router-dom";
 
@@ -10,7 +10,7 @@ const ForgotPass = () => {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
 
-  const { useMutationForgetPasswordReset } = useMutationForgetPassword();
+  const { useMutationForgetPasswordReset } = useMutationAuth();
   const { mutate: ForgotPass, isSuccess, isPending } = useMutationForgetPasswordReset();
   
   const handleForgotPass = async (email: string) => {
