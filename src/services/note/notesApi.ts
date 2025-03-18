@@ -4,6 +4,7 @@ import api from "@/middleware/api";
 type ToggleCompleteData = Pick<IUpdateNote, "id" | "is_done">
 type ToggleArchiveData = Pick<IUpdateNote, "id" | "is_archived">
 
+
 export const addNote = (data:IAddNote) => {
     try {
       const res = api.post("todolist/", data)

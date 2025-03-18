@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { INotesState, ITodoQuery } from "@/interfaces/interfaces";
-import { useFetchTodos } from "@/hooks/tanstack/query/useQuery";
+import { useFetchTodos } from "@/hooks/tanstack/notes/useQueryNote";
 import "@/styles/MainPage.css";
 import "@/styles/NotePopup.css";
 import "@/styles/ProfilePopup.css";
