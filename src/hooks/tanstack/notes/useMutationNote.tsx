@@ -1,5 +1,5 @@
 import { IAddNote, IUpdateNote } from "@/interfaces/interfaces"
-import { addNote, deleteNote, toggleArchive, toggleComplete, updateNoteContent, updateNoteTitle } from "@/services/note/notesApi"
+import { addNote, deleteNote, toggleArchive, toggleComplete, updateNoteContent, updateNoteDeadline, updateNoteTitle } from "@/services/note/notesApi"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { toast } from "react-toastify"
@@ -42,6 +42,19 @@ const useMutationNote = () => {
             },
             onError: () => {
                 toast.error("Failed to update note content")
+            }
+        });
+    }
+
+    const useMutationUpdateNoteDeadline = () => {
+        const queryClient = useQueryClient();
+        return useMutation({
+            mutationFn: async (data: IUpdateNote) => updateNoteDeadline(data),
+            onSuccess: () => {
+                queryClient.invalidateQueries({ queryKey: ["todos"] });
+            },
+            onError: () => {
+                toast.error("Failed to update deadline");
             }
         });
     }
@@ -99,6 +112,7 @@ const useMutationNote = () => {
         useMutationAddNote, 
         useMutationUpdateNoteTitle, 
         useMutationUpdateNoteContent,
+        useMutationUpdateNoteDeadline,
         useMutationDeleteNote,
         useMutationToggleComplete,
         useMutationToggleArchive

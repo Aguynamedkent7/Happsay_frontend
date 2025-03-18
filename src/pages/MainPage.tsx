@@ -35,6 +35,9 @@ export default function MainPage() {
   const { useMutationUpdateNoteContent } = useMutationNote();
   const { mutate: updateNoteContent } = useMutationUpdateNoteContent();
 
+  const { useMutationUpdateNoteDeadline } = useMutationNote();
+  const { mutate: updateNoteDeadline } = useMutationUpdateNoteDeadline();
+
   const { useMutationAddNote } = useMutationNote();
   const { mutate: addNote } = useMutationAddNote();
 
@@ -69,6 +72,7 @@ export default function MainPage() {
     try {
       updateNoteTitle({ id: selectedNote.id, newTitle: selectedNote.title });
       updateNoteContent({ id: selectedNote.id, newContent: selectedNote.content });
+      updateNoteDeadline({ id: selectedNote.id, newDeadline: selectedNote.deadline });
       toast.success("Changes saved");
       setSelectedNote(null); // Close the popup
     } catch (error) {
@@ -120,12 +124,30 @@ export default function MainPage() {
     setNoteToArchive(null); // Close the archive confirmation popup
   };
 
+  const handleDeadlineChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedDate = e.target.value;
+    const today = new Date().toISOString().split("T")[0];
+
+    if (selectedDate < today) {
+      toast.error("Can't set a past date as deadline");
+      setNoteDeadline(today);
+       // Reset to today's date or keep the last valid date
+    } else if (selectedNote) {
+      setSelectedNote((prev) => (prev ? { ...prev, deadline: selectedDate } : prev));
+    }
+  };
+
+  const isPastDue = (deadline: string) => {
+    const today = new Date().toISOString().split("T")[0];
+    return deadline < today;
+  };
+
   return (
     <div className="container">
       <header className="header">
         <h1>Happsay!</h1>
         <button className="profile-pic" onClick={() => setIsProfileOpen((prev) => !prev)}>
-          { user?.username }
+          {user?.username}
         </button>
       </header>
 
@@ -160,8 +182,7 @@ export default function MainPage() {
               <input type="text" value={noteContent} onChange={(e) => setNoteContent(e.target.value)} placeholder="Add a Task..." />
               <div className="input-group">
                 <label htmlFor="noteDeadline">Select deadline:</label>
-                <input id="noteDeadline" type="date" value={noteDeadline} onChange={(e) => setNoteDeadline(e.target.value)} />
-              </div>
+                <input id="noteDeadline" type="date" value={noteDeadline} onChange={handleDeadlineChange} min={new Date().toISOString().split("T")[0]} /></div>
               <button onClick={handleAddNote} className="add">Add</button>
             </div>
           )}
@@ -196,7 +217,7 @@ export default function MainPage() {
                     <div className="note-info" onClick={() => setSelectedNote(note)}>
                       <strong className="note-title">{note.title}</strong>
                       <p className="note-preview">{note.content.slice(0, 30)}...</p>
-                      <div className="note-deadline">
+                      <div className="note-deadline" style={{ color: isPastDue(note.deadline) ? 'red' : 'inherit' }}>
                         <strong>Deadline:</strong> {note.deadline ? note.deadline : "No deadline"}
                       </div>
                     </div>
@@ -231,6 +252,17 @@ export default function MainPage() {
                 setSelectedNote((prev) => (prev ? { ...prev, content: e.target.value } : prev));
               }}
             />
+            <div>
+              <p className="deadtitle"> Deadline </p>
+              {/* Deadline Input */}
+              <input
+                type="date"
+                value={selectedNote.deadline || ""}
+                onChange={handleDeadlineChange}
+                min={new Date().toISOString().split("T")[0]}
+                className="note-deadlinepopup"
+              />
+            </div>
 
             <div className="popup-footer">
               <button className="delete-btn" onClick={() => confirmDeleteNote(selectedNote!)}>Delete</button>
@@ -245,7 +277,7 @@ export default function MainPage() {
                 {selectedTab === "Archive" ? "Unarchive" : "Archive"}
               </button>
               <button className="save-btn" onClick={handleSaveChanges}>Save</button>
-            </div>
+              </div>
           </div>
         </div>
       )}

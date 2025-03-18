@@ -24,6 +24,7 @@ export interface IUpdateNote {
     newContent?: string;
     is_done?: boolean;
     is_archived?: boolean;
+    newDeadline?: string;
 }
 
 export interface ITodoQuery { 

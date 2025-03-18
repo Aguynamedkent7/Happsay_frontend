@@ -38,8 +38,8 @@ const InputField: React.FC<{
   );
 };
 
-const Button: React.FC<{ text: string; type?: "button" | "submit" | "reset" }> = ({ text, type = "button" }) => (
-  <button className="login-button" type={type}>{text}</button>
+const Button: React.FC<{ text: string; disabled:boolean; type?: "button" | "submit" | "reset" }> = ({ text, type = "button", disabled }) => (
+  <button  className="login-button" disabled={disabled} type={type}>{text} </button>
 );
 
 const LoginPage: React.FC = () => {
@@ -67,7 +67,7 @@ const LoginPage: React.FC = () => {
           <InputField type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
           <InputField type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} showPasswordToggle />
           <Link to="/forgot-password" className="forgot-password">Forgot Password?</Link>
-          <Button text={isPending ? "Logging in..." : "Log In"} type="submit" />
+          <Button text={isPending ? "Logging in..." : "Log In"} type="submit"  disabled={isPending} />
         </form>
         <p className="signup-text">
           Don’t have an account? <Link to="/signup">Sign up</Link>

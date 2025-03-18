@@ -42,6 +42,14 @@ export const updateNoteContent = (data: IUpdateNote) => {
     }
   }
   
+  export const updateNoteDeadline = (data: IUpdateNote) => {
+    try {
+      const res = api.patch(`todolist/${data.id}/`, { deadline: data.newDeadline })
+      return res
+    } catch (error) {
+      console.error(error); 
+    }
+  }
 
 export const deleteNote = (id: number) => {
   try {
