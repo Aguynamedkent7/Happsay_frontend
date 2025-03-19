@@ -40,15 +40,12 @@ const InputField: React.FC<{
   );
 };
 
-const Button: React.FC<{ text: string; type?: "button" | "submit" | "reset" }> = ({ text, type = "button" }) => (
-  <button className="signup-button" type={type}>{text}</button>
-);
 
 const SignupPage: React.FC = () => {
   const navigate = useNavigate();
   
   const {useMutationSignup} = useMutationAuth();
-  const { mutate: signup } = useMutationSignup();
+  const { mutate: signup, isPending } = useMutationSignup();
 
   const [formData, setFormData] = useState({
     username: "",
@@ -131,7 +128,9 @@ const handleSignup = (e: React.FormEvent) => {
           <InputField type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} showPasswordToggle />
           <InputField type="password" name="confirm_password" placeholder="Confirm Password" value={formData.confirm_password} onChange={handleChange} showPasswordToggle />
           <Link to="/login" className="tet">Already have an account?</Link>
-          <Button text="Sign Up" type="submit" />
+          <button type="submit" disabled={isPending}>
+            {isPending ? "Signing up..." : "Sign Up"}
+          </button>
         </form>
       </div>
       <Toast />

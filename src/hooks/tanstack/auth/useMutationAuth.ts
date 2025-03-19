@@ -86,7 +86,7 @@ const useMutationAuth = () => {
         return useMutation({
               mutationFn: async (data: IUserData) => registerUser(data),
               onSuccess: () => {
-                toast.success("Registered successfully!");
+                toast.success("Registered successfully! Redirecting to login...");
               },
               onError: () => {
                 showToast("Failed to register", "error");
